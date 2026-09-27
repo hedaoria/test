@@ -6,14 +6,15 @@ import { ButtonLink } from "@/components/ui/Button";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { ProCard } from "@/components/pros/ProCard";
 import { ProSearchForm, DISTANCES } from "@/components/pros/ProSearchForm";
-import { findCategory, searchProfessionals } from "@/lib/repository";
+import { findCategory, listProfessionals, searchProfessionals } from "@/lib/repository";
+import { HowItWorksSteps } from "@/components/home/HowItWorksSteps";
 import { itemListLd } from "@/lib/seo";
 import { pluralize } from "@/lib/format";
 
 export const metadata: Metadata = {
   title: "Vind een vakman bij jou in de buurt",
   description:
-    "Zoek op vakgebied, postcode of plaats en vergelijk vakmensen uit jouw regio. Bekijk ervaring, beschikbaarheid en beoordelingen van klanten.",
+    "Vakconnectie helpt je bij het vinden van een passende zelfstandige vakman. Doe gratis en vrijblijvend een projectaanvraag.",
   alternates: { canonical: "/vakmensen" },
 };
 
@@ -23,6 +24,8 @@ function param(v: string | string[] | undefined) {
 
 export default async function VakmensenPage(props: PageProps<"/vakmensen">) {
   const sp = await props.searchParams;
+  // Zolang er geen openbare profielen zijn, zoeken wij voor de klant.
+  if ((await listProfessionals()).length === 0) return <NoPublicProfiles />;
   const values = {
     vakgebied: param(sp.vakgebied),
     postcode: param(sp.postcode),
@@ -106,28 +109,49 @@ export default async function VakmensenPage(props: PageProps<"/vakmensen">) {
         <div className="mt-8 rounded-2xl border border-dashed border-stone-300 bg-stone-50 p-8 text-center sm:p-12">
           <h3 className="text-lg font-semibold">Geen vakmensen gevonden met deze zoekopdracht</h3>
           <p className="mx-auto mt-2 max-w-md text-stone-600">
-            Probeer een grotere afstand of een ander vakgebied. Of plaats je klus: dan kunnen vakmensen uit de regio
-            zelf reageren.
+            Probeer een grotere afstand of een ander vakgebied. Of doe een projectaanvraag: dan zoeken wij een
+            passende zelfstandige vakman voor je.
           </p>
           <ButtonLink
             href={`/klus-plaatsen${category ? `?vakgebied=${category.slug}` : ""}`}
             className="mt-6"
             size="lg"
           >
-            Plaats je klus
+            Doe een projectaanvraag
           </ButtonLink>
         </div>
       )}
 
       <aside className="mt-14 flex flex-col items-start justify-between gap-4 rounded-2xl bg-brand-50 p-6 sm:flex-row sm:items-center sm:p-8">
         <div>
-          <h2 className="text-lg font-semibold">Liever dat vakmensen naar jou toe komen?</h2>
-          <p className="mt-1 text-stone-700">Plaats gratis je klus en ontvang reacties van vakmensen uit de buurt.</p>
+          <h2 className="text-lg font-semibold">Liever dat wij voor je zoeken?</h2>
+          <p className="mt-1 text-stone-700">Doe gratis en vrijblijvend een projectaanvraag, dan zoeken wij een passende vakman.</p>
         </div>
         <ButtonLink href={`/klus-plaatsen${category ? `?vakgebied=${category.slug}` : ""}`} size="lg">
-          Plaats gratis je klus
+          Doe een projectaanvraag
         </ButtonLink>
       </aside>
+    </div>
+  );
+}
+
+function NoPublicProfiles() {
+  return (
+    <div className="container-page py-8 sm:py-12">
+      <Breadcrumbs items={[{ name: "Vind een vakman", path: "/vakmensen" }]} />
+      <h1 className="mt-4 text-3xl font-semibold sm:text-4xl">Vind een vakman</h1>
+      <p className="mt-3 max-w-2xl text-lg leading-relaxed text-stone-600">
+        Vertel ons wat je wilt laten doen. Wij helpen je bij het vinden van een passende zelfstandige vakman en
+        controleren de KvK-inschrijving voordat we iemand aan je voorstellen.
+      </p>
+      <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+        <ButtonLink href="/klus-plaatsen" size="lg">Doe gratis een projectaanvraag</ButtonLink>
+        <ButtonLink href="/contact" variant="secondary" size="lg">Neem contact op</ButtonLink>
+      </div>
+      <section className="mt-14 border-t border-stone-200 pt-12">
+        <h2 className="text-2xl font-semibold">Zo werkt het</h2>
+        <HowItWorksSteps className="mt-8" />
+      </section>
     </div>
   );
 }

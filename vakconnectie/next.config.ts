@@ -29,6 +29,13 @@ const nextConfig: NextConfig = {
         permanent: true,
       })),
       { source: "/vind-een-vakman", destination: "/vakmensen", permanent: true },
+      // Bestaande URL van de huidige site behouden.
+      { source: "/privacy-policy.html", destination: "/privacybeleid", permanent: true },
+      { source: "/index.html", destination: "/", permanent: true },
+      // Zolang accounts uit staan, gaat aanmelden via het aanmeldformulier.
+      ...(process.env.ACCOUNTS_ENABLED === "true"
+        ? []
+        : [{ source: "/registreren", destination: "/aanmelden-als-vakman", permanent: false }]),
     ];
   },
 };

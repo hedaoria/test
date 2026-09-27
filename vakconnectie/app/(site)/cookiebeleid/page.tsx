@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { LegalPage } from "@/components/layout/LegalPage";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
   title: "Cookiebeleid",
-  description: "Welke cookies Vakconnectie gebruikt en waarom.",
+  description: "Vakconnectie gebruikt geen advertentie- of trackingcookies en geen analysediensten.",
   path: "/cookiebeleid",
 });
 
@@ -13,11 +14,16 @@ export default function CookiePage() {
     <LegalPage
       title="Cookiebeleid"
       path="/cookiebeleid"
-      updated="2026-09-01"
+      intro={
+        <p>
+          Meer over hoe we met je gegevens omgaan, lees je in ons <Link href="/privacybeleid" className="font-medium text-brand-700 hover:underline">privacybeleid</Link>.
+        </p>
+      }
       sections={[
-        { heading: "Wat zijn cookies?", paragraphs: ["Cookies zijn kleine bestanden die een website op je apparaat opslaat. Ze zorgen er bijvoorbeeld voor dat je ingelogd blijft."] },
-        { heading: "Welke cookies gebruiken we?", paragraphs: ["Functionele cookies: nodig om in te loggen en om je voorkeuren te onthouden. Hiervoor vragen we geen toestemming.", "Analytische cookies: alleen als we die in de toekomst gaan gebruiken, en dan pas na jouw toestemming. We gebruiken geen advertentiecookies."] },
-        { heading: "Cookies verwijderen", paragraphs: ["Je kunt cookies op elk moment verwijderen via de instellingen van je browser. Houd er rekening mee dat je dan opnieuw moet inloggen."] },
+        {
+          heading: "Welke cookies gebruiken we?",
+          paragraphs: ["Deze website gebruikt geen advertentie- of trackingcookies en geen analysediensten. Daarom vragen we je ook niet om toestemming voor cookies."],
+        },
       ]}
     />
   );

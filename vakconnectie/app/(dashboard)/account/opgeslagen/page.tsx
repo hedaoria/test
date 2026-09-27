@@ -5,8 +5,8 @@ import { listProfessionals } from "@/lib/repository";
 
 export const metadata: Metadata = { title: "Opgeslagen vakmensen" };
 
-// Demo: vaste selectie. Later: tabel saved_professionals (user_id, professional_id).
-const SAVED = ["van-dijk-schilderwerken", "tuinen-van-mulder", "stukadoorsbedrijf-el-amrani"];
+// TODO: opgeslagen vakmensen uit de database (saved_professionals: user_id, professional_id).
+const SAVED: string[] = [];
 
 export default async function SavedPage() {
   const pros = (await listProfessionals()).filter((p) => SAVED.includes(p.slug));

@@ -5,7 +5,7 @@ import Link from "next/link";
 import clsx from "clsx";
 import { ArrowLeft, ImagePlus, Paperclip, Send, X } from "lucide-react";
 import { Avatar } from "@/components/ui/Avatar";
-import { formatShortDate, formatTime, DEMO_NOW } from "@/lib/format";
+import { formatShortDate, formatTime } from "@/lib/format";
 import type { Message } from "@/lib/types";
 
 export interface ThreadSummary {
@@ -19,7 +19,7 @@ export interface ThreadSummary {
 
 /**
  * Berichten tussen opdrachtgever en vakman.
- * Nu lokaal (demo); later koppelen aan /api/berichten + realtime (bijv. SSE of websockets).
+ * Nu alleen in de browser; later koppelen aan /api/berichten + realtime (bijv. SSE of websockets).
  */
 export function Messenger({
   threads: initial,
@@ -135,7 +135,7 @@ export function Messenger({
                 <div key={m.id}>
                   {newDay && (
                     <p className="my-3 text-center text-xs font-medium text-stone-500">
-                      {m.sentAt.slice(0, 10) === DEMO_NOW.toISOString().slice(0, 10) ? "Vandaag" : formatShortDate(m.sentAt)}
+                      {m.sentAt.slice(0, 10) === new Date().toISOString().slice(0, 10) ? "Vandaag" : formatShortDate(m.sentAt)}
                     </p>
                   )}
                   <div className={clsx("flex", mine ? "justify-end" : "justify-start")}>

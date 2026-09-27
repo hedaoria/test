@@ -1,6 +1,6 @@
 /**
  * Hulpfuncties voor de dashboards. Zolang authenticatie nog niet gekoppeld is,
- * tonen de dashboards de demo-gebruikers uit lib/data. Vervang
+ * gebruiken de dashboards een lege gebruiker. Vervang
  * CURRENT_CUSTOMER_ID / CURRENT_PROFESSIONAL_SLUG later door de sessie
  * (getSession() uit lib/auth).
  */

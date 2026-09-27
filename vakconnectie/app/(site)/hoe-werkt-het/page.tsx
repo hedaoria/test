@@ -12,30 +12,30 @@ import { faqLd, pageMetadata } from "@/lib/seo";
 export const metadata: Metadata = pageMetadata({
   title: "Hoe werkt Vakconnectie?",
   description:
-    "In drie stappen een vakman vinden: plaats je klus, ontvang reacties van vakmensen uit de buurt en kies op basis van profielen en beoordelingen.",
+    "Vakconnectie is een bemiddelingsbedrijf dat je helpt bij het vinden van een passende zelfstandige vakman. Een projectaanvraag is gratis en vrijblijvend.",
   path: "/hoe-werkt-het",
 });
 
 const DETAILS = [
   {
-    title: "Je klus plaatsen",
-    text: "Je beantwoordt een paar korte vragen: wat moet er gebeuren, waar en wanneer. Foto's toevoegen kan, maar hoeft niet. Plaatsen is gratis.",
+    title: "Je doet een projectaanvraag",
+    text: "Je vult in wat er moet gebeuren, waar en wanneer. Aan het eind verstuur je je aanvraag via WhatsApp of e-mail. Foto’s kun je meesturen. Een projectaanvraag is gratis en vrijblijvend.",
   },
   {
-    title: "Reacties ontvangen",
-    text: "Vakmensen die in jouw regio werken en bij het vakgebied passen, zien je klus. Wie interesse heeft, stuurt je een bericht. Je krijgt een melding bij elke nieuwe reactie.",
+    title: "Wij zoeken een passende vakman",
+    text: "Vakconnectie werkt als bemiddelingsbedrijf. Op basis van je aanvraag zoeken we een zelfstandige vakman die bij je project past.",
   },
   {
-    title: "Vragen stellen en afspreken",
-    text: "Via de berichten stel je vragen, spreek je een bezichtiging af of vraag je om een prijsopgave. Je adres en telefoonnummer deel je pas als jij dat wilt.",
+    title: "We controleren de KvK-inschrijving",
+    text: "Voordat we een vakman aan je voorstellen, controleren we de inschrijving bij de Kamer van Koophandel.",
   },
   {
-    title: "Kiezen en laten uitvoeren",
-    text: "Je kiest zelf met wie je verdergaat. Prijs en planning spreek je rechtstreeks met de vakman af. Vakconnectie rekent jou daar niets voor.",
+    title: "We brengen je met elkaar in contact",
+    text: "Waar dat nodig is voor je aanvraag, delen we je gegevens met de geselecteerde vakman, zodat jullie contact kunnen opnemen.",
   },
   {
-    title: "Beoordeling schrijven",
-    text: "Na afloop vragen we je om een beoordeling. Zo help je andere opdrachtgevers bij hun keuze, en goede vakmensen aan nieuwe klussen.",
+    title: "Jullie maken samen schriftelijke afspraken",
+    text: "Prijs, planning, werkzaamheden en garantie spreek je rechtstreeks met de vakman af. Leg deze afspraken samen schriftelijk vast.",
   },
 ];
 
@@ -48,8 +48,8 @@ export default function HowItWorksPage() {
           <Breadcrumbs items={[{ name: "Hoe werkt het?", path: "/hoe-werkt-het" }]} />
           <h1 className="mt-6 max-w-2xl text-3xl font-semibold sm:text-4xl">Hoe werkt Vakconnectie?</h1>
           <p className="mt-3 max-w-2xl text-lg leading-relaxed text-stone-600">
-            Vakconnectie brengt je in contact met vakmensen uit de buurt. Jij houdt de regie: je kiest zelf met wie je
-            in gesprek gaat en wie de klus uitvoert.
+            Vakconnectie is een bemiddelingsbedrijf. We helpen klanten bij het vinden van passende zelfstandige
+            vakmensen, en vakmensen bij het vinden van nieuwe klanten.
           </p>
           <HowItWorksSteps className="mt-12" />
         </div>
@@ -69,8 +69,8 @@ export default function HowItWorksPage() {
           ))}
         </ol>
         <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-          <ButtonLink href="/klus-plaatsen" size="lg">Plaats gratis je klus</ButtonLink>
-          <ButtonLink href="/vakmensen" variant="secondary" size="lg">Bekijk vakmensen</ButtonLink>
+          <ButtonLink href="/klus-plaatsen" size="lg">Doe gratis een projectaanvraag</ButtonLink>
+          <ButtonLink href="/contact" variant="secondary" size="lg">Neem contact op</ButtonLink>
         </div>
       </section>
 

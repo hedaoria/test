@@ -11,7 +11,7 @@ const input: CategoryInput[] = [
     namePlural: "Schilders",
     short: "Binnen- en buitenschilderwerk, kozijnen en houtrot.",
     intro:
-      "Een goede schilder begint met het voorwerk: schuren, kitten en eventueel houtrot herstellen. Beschrijf je klus en ontvang reacties van schilders uit de buurt.",
+      "Een goede schilder begint met het voorwerk: schuren, kitten en eventueel houtrot herstellen. Beschrijf je klus, dan zoeken wij een passende zelfstandige schilder.",
     commonJobs: ["Kozijnen buiten schilderen", "Woonkamer sausen", "Houtrot herstellen", "Trapgat schilderen", "Deuren lakken"],
   },
   {
@@ -21,7 +21,7 @@ const input: CategoryInput[] = [
     namePlural: "Loodgieters",
     short: "Lekkages, leidingwerk, afvoer en sanitair.",
     intro:
-      "Van een druppelende kraan tot nieuw leidingwerk voor een verbouwing. Vertel wat er aan de hand is, dan kunnen loodgieters uit jouw regio reageren.",
+      "Van een druppelende kraan tot nieuw leidingwerk voor een verbouwing. Vertel wat er aan de hand is, dan zoeken wij een passende zelfstandige loodgieter.",
     commonJobs: ["Lekkage repareren", "Toilet vervangen", "Afvoer ontstoppen", "Leidingen verleggen", "Kraan vervangen"],
   },
   {
@@ -41,7 +41,7 @@ const input: CategoryInput[] = [
     namePlural: "Timmermannen",
     short: "Kozijnen, deuren, trappen en maatwerk van hout.",
     intro:
-      "Een inbouwkast op maat, nieuwe binnendeuren of een dakkapel afwerken. Timmerlieden uit de buurt denken graag met je mee.",
+      "Een inbouwkast op maat, nieuwe binnendeuren of een dakkapel afwerken. Vertel wat je voor ogen hebt, dan zoeken wij een passende zelfstandige timmerman.",
     commonJobs: ["Inbouwkast maken", "Binnendeuren plaatsen", "Kozijn vervangen", "Trap renoveren", "Schutting plaatsen"],
   },
   {
@@ -51,7 +51,7 @@ const input: CategoryInput[] = [
     namePlural: "Stukadoors",
     short: "Wanden en plafonds glad of met structuur afwerken.",
     intro:
-      "Strakke wanden, een nieuw plafond of scheuren herstellen. Geef aan om hoeveel vierkante meter het ongeveer gaat, dan kunnen stukadoors beter inschatten wat er nodig is.",
+      "Strakke wanden, een nieuw plafond of scheuren herstellen. Geef aan om hoeveel vierkante meter het ongeveer gaat; dat helpt bij het vinden van de juiste stukadoor.",
     commonJobs: ["Wanden glad stucen", "Plafond spuiten", "Scheuren herstellen", "Sierpleister aanbrengen", "Betonstuc"],
   },
   {
@@ -61,7 +61,7 @@ const input: CategoryInput[] = [
     namePlural: "Dakdekkers",
     short: "Daklekkage, dakpannen, bitumen en dakgoten.",
     intro:
-      "Een lekkend dak wil je snel laten nakijken. Dakdekkers uit de regio kunnen reageren op reparaties, onderhoud en complete dakrenovaties.",
+      "Een lekkend dak wil je snel laten nakijken. Of het nu gaat om een reparatie of een complete dakrenovatie: wij zoeken een passende zelfstandige dakdekker.",
     commonJobs: ["Daklekkage repareren", "Plat dak vernieuwen", "Dakgoot vervangen", "Dakpannen herstellen", "Dak isoleren"],
   },
   {
@@ -71,7 +71,7 @@ const input: CategoryInput[] = [
     namePlural: "Vloerspecialisten",
     short: "Parket, pvc, laminaat en gietvloeren.",
     intro:
-      "Een nieuwe pvc-vloer, parket laten schuren of een gietvloer in de woonkamer. Vergelijk vloerspecialisten en bekijk hun eerdere projecten.",
+      "Een nieuwe pvc-vloer, parket laten schuren of een gietvloer in de woonkamer. Vertel wat je wilt, dan zoeken wij een passende vloerspecialist.",
     commonJobs: ["Pvc-vloer leggen", "Parket schuren en lakken", "Laminaat leggen", "Gietvloer aanbrengen", "Ondervloer egaliseren"],
   },
   {
@@ -91,7 +91,7 @@ const input: CategoryInput[] = [
     namePlural: "Hoveniers",
     short: "Tuinaanleg, bestrating, onderhoud en beplanting.",
     intro:
-      "Een nieuwe tuin laten aanleggen, de bestrating vervangen of vast onderhoud. Hoveniers uit de buurt kunnen reageren en een voorstel doen.",
+      "Een nieuwe tuin laten aanleggen, de bestrating vervangen of vast onderhoud. Vertel wat je wilt, dan zoeken wij een passende zelfstandige hovenier.",
     commonJobs: ["Tuin aanleggen", "Bestrating leggen", "Tuinonderhoud", "Schutting plaatsen", "Bomen snoeien"],
   },
   {
@@ -121,17 +121,17 @@ const input: CategoryInput[] = [
     namePlural: "Schoonmaakbedrijven",
     short: "Opleverschoonmaak, glasbewassing en na een verbouwing.",
     intro:
-      "Na een verbouwing of verhuizing is een grondige schoonmaak geen overbodige luxe. Schoonmaakbedrijven uit de regio helpen je graag.",
+      "Na een verbouwing of verhuizing is een grondige schoonmaak geen overbodige luxe. Vertel wat er schoongemaakt moet worden, dan zoeken wij een passende partij.",
     commonJobs: ["Opleverschoonmaak", "Schoonmaak na verbouwing", "Glasbewassing", "Verhuisschoonmaak", "Gevelreiniging"],
   },
 ];
 
 export const categories: Category[] = input.map((c) => ({
   ...c,
-  metaTitle: c.metaTitle ?? `${c.name} nodig? Vind ${c.namePlural.toLowerCase()} bij jou in de buurt`,
+  metaTitle: c.metaTitle ?? `${c.name} nodig? Doe gratis een projectaanvraag`,
   metaDescription:
     c.metaDescription ??
-    `Plaats gratis je klus en kom in contact met ${c.namePlural.toLowerCase()} uit jouw regio. Bekijk profielen, eerdere projecten en beoordelingen van klanten.`,
+    `Op zoek naar een ${c.name.toLowerCase()}? Doe gratis en vrijblijvend een projectaanvraag. Vakconnectie helpt je bij het vinden van een passende zelfstandige vakman.`,
   active: true,
 }));
 

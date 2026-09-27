@@ -175,12 +175,3 @@ export interface Report {
   createdAt: string;
   status: "open" | "in_behandeling" | "afgehandeld";
 }
-
-export interface Plan {
-  id: string;
-  name: string;
-  priceMonthly: number; // in euro's, excl. btw
-  description: string;
-  features: string[];
-  highlighted?: boolean;
-}

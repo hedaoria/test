@@ -38,7 +38,7 @@ export function NewCategoryForm() {
       {added.length > 0 && (
         <ul className="mt-4 space-y-1 text-sm" role="status">
           {added.map((a) => (
-            <li key={a}>Toegevoegd als concept: <strong>{a}</strong> (/{slugify(a)})</li>
+            <li key={a}>Toegevoegd: <strong>{a}</strong> (/{slugify(a)})</li>
           ))}
         </ul>
       )}

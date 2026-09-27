@@ -38,16 +38,16 @@ export default async function CategoryPage(props: PageProps<"/[vakgebied]">) {
   const plural = category.namePlural.toLowerCase();
   const faqs = [
     {
-      q: `Hoe vind ik een goede ${lower}?`,
-      a: `Plaats je klus op Vakconnectie met een duidelijke omschrijving en eventueel foto's. ${category.namePlural} uit jouw regio kunnen reageren. Vergelijk daarna hun profielen, eerdere projecten en beoordelingen van andere klanten.`,
+      q: `Hoe vind ik via Vakconnectie een ${lower}?`,
+      a: `Doe een projectaanvraag met een duidelijke omschrijving. Vakconnectie helpt je vervolgens bij het vinden van een passende zelfstandige ${lower}. Voordat we iemand aan je voorstellen, controleren we de KvK-inschrijving.`,
     },
     {
       q: `Wat kost een ${lower}?`,
-      a: `Dat verschilt per klus. De prijs hangt af van de omvang, de materialen en de planning. Vraag altijd om een schriftelijke prijsopgave waarin staat wat wel en niet is inbegrepen.`,
+      a: "Dat hangt af van je project. Prijs, planning, werkzaamheden en garantie spreek je zelf met de vakman af en leg je samen schriftelijk vast.",
     },
     {
-      q: "Kost het plaatsen van een klus iets?",
-      a: "Nee, een klus plaatsen is gratis en je zit nergens aan vast.",
+      q: "Kost een projectaanvraag iets?",
+      a: "Nee, een projectaanvraag is gratis en vrijblijvend.",
     },
   ];
 
@@ -62,11 +62,13 @@ export default async function CategoryPage(props: PageProps<"/[vakgebied]">) {
             <p className="mt-3 text-lg leading-relaxed text-stone-600">{category.intro}</p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <ButtonLink href={`/klus-plaatsen?vakgebied=${category.slug}`} size="lg">
-                Plaats je klus
+                Doe gratis een projectaanvraag
               </ButtonLink>
-              <ButtonLink href="#vakmensen" variant="secondary" size="lg">
-                Bekijk {plural}
-              </ButtonLink>
+              {results.length > 0 && (
+                <ButtonLink href="#vakmensen" variant="secondary" size="lg">
+                  Bekijk {plural}
+                </ButtonLink>
+              )}
             </div>
           </div>
         </div>
@@ -88,20 +90,17 @@ export default async function CategoryPage(props: PageProps<"/[vakgebied]">) {
         </ul>
       </section>
 
-      <section id="vakmensen" className="container-page scroll-mt-24 pb-16">
-        <h2 className="text-2xl font-semibold">{category.namePlural} op Vakconnectie</h2>
-        <p className="mt-2 text-stone-600">Zoek op postcode of plaats om te zien wie er bij jou in de buurt werkt.</p>
-        <ProSearchForm compact values={{ vakgebied: category.slug }} className="mt-6" />
-        {results.length > 0 ? (
+      {results.length > 0 && (
+        <section id="vakmensen" className="container-page scroll-mt-24 pb-16">
+          <h2 className="text-2xl font-semibold">{category.namePlural} bij Vakconnectie</h2>
+          <ProSearchForm compact values={{ vakgebied: category.slug }} className="mt-6" />
           <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {results.map((p) => (
               <ProCard key={p.slug} pro={p} />
             ))}
           </div>
-        ) : (
-          <p className="mt-6 text-stone-600">Er staan nog geen {plural} op Vakconnectie. Plaats je klus, dan kunnen vakmensen reageren zodra ze zich aanmelden.</p>
-        )}
-      </section>
+        </section>
+      )}
 
       <section className="border-y border-stone-200 bg-stone-50 py-14">
         <div className="container-page">
@@ -124,7 +123,7 @@ export default async function CategoryPage(props: PageProps<"/[vakgebied]">) {
               {cities.map((c) => (
                 <li key={c.slug}>
                   <Link
-                    href={`/vakmensen?vakgebied=${category.slug}&plaats=${encodeURIComponent(c.name)}`}
+                    href={`/vakmensen/${c.slug}`}
                     className="text-[0.9375rem] text-stone-700 hover:text-brand-700 hover:underline"
                   >
                     {category.name} {c.name}

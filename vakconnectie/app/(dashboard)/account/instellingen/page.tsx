@@ -51,7 +51,7 @@ export default async function CustomerSettingsPage() {
               <Link href="/wachtwoord-vergeten" className="font-medium text-brand-700 hover:underline">Wachtwoord wijzigen</Link>
             </p>
             <p className="text-stone-600">
-              Wil je je account verwijderen? Neem <Link href="/contact" className="font-medium text-brand-700 hover:underline">contact</Link> met ons op. We verwijderen je gegevens binnen 30 dagen.
+              Wil je je account verwijderen? Neem <Link href="/contact" className="font-medium text-brand-700 hover:underline">contact</Link> met ons op.
             </p>
           </div>
         </Panel>

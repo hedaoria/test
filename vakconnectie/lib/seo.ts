@@ -31,11 +31,21 @@ export function organizationLd() {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: SITE_NAME,
+    legalName: COMPANY.legalName,
     url: SITE_URL,
     logo: absoluteUrl("/icon.svg"),
     email: COMPANY.email,
+    telephone: COMPANY.phoneDisplay,
     description: SITE_DESCRIPTION,
-    areaServed: { "@type": "Country", name: "Nederland" },
+    address: { "@type": "PostalAddress", addressLocality: COMPANY.city, addressCountry: "NL" },
+    identifier: { "@type": "PropertyValue", propertyID: "KvK", value: COMPANY.kvk },
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "customer service",
+      email: COMPANY.email,
+      telephone: COMPANY.phoneDisplay,
+      availableLanguage: ["nl"],
+    },
   };
 }
 
@@ -46,11 +56,6 @@ export function websiteLd() {
     name: SITE_NAME,
     url: SITE_URL,
     inLanguage: "nl-NL",
-    potentialAction: {
-      "@type": "SearchAction",
-      target: { "@type": "EntryPoint", urlTemplate: `${SITE_URL}/vakmensen?plaats={plaats}` },
-      "query-input": "required name=plaats",
-    },
   };
 }
 

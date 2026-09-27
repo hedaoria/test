@@ -59,7 +59,7 @@ export function ReviewForm({ companyName, jobTitle }: { companyName: string; job
     return (
       <div role="status" className="p-5">
         <p className="font-semibold">Bedankt voor je beoordeling!</p>
-        <p className="mt-1 text-stone-600">Je review voor {companyName} wordt na een korte controle op het profiel geplaatst. Je kunt hem de komende 14 dagen nog aanpassen.</p>
+        <p className="mt-1 text-stone-600">Je review voor {companyName} is ontvangen.</p>
       </div>
     );
   }

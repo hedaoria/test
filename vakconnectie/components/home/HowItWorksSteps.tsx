@@ -3,15 +3,15 @@ import clsx from "clsx";
 export const CUSTOMER_STEPS = [
   {
     title: "Vertel wat je nodig hebt",
-    text: "Beschrijf je klus, locatie en gewenste planning. Foto’s kunnen eventueel worden toegevoegd.",
+    text: "Beschrijf je project, de locatie en je gewenste planning, en verstuur je aanvraag via WhatsApp of e-mail. Gratis en vrijblijvend.",
   },
   {
-    title: "Kom in contact met vakmensen",
-    text: "Geschikte vakmensen uit jouw regio kunnen op de opdracht reageren.",
+    title: "Wij zoeken een passende vakman",
+    text: "Vakconnectie zoekt een zelfstandige vakman die bij je project past. We controleren de KvK-inschrijving voordat we iemand aan je voorstellen.",
   },
   {
-    title: "Vergelijk en kies",
-    text: "Bekijk profielen, ervaringen, beoordelingen en informatie over het bedrijf voordat je een keuze maakt.",
+    title: "Je maakt zelf de afspraken",
+    text: "Jij en de vakman leggen samen schriftelijk vast wat de prijs, planning, werkzaamheden en garantie zijn.",
   },
 ];
 

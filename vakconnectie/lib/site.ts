@@ -1,21 +1,27 @@
 export const SITE_NAME = "Vakconnectie";
-export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.vakconnectie.nl").replace(/\/$/, "");
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://vakconnectie.nl").replace(/\/$/, "");
 export const SITE_DESCRIPTION =
-  "Plaats je klus en kom eenvoudig in contact met vakmensen bij jou in de buurt. Vergelijk profielen en beoordelingen en kies zelf.";
+  "Vakconnectie helpt je bij het vinden van een passende zelfstandige vakman. Een projectaanvraag is gratis en vrijblijvend.";
 
-/** Zet op "false" zodra echte profielen uit de database komen. */
-export const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE !== "false";
-
-// Bedrijfsgegevens: vervangen door de echte gegevens vóór livegang.
+/** Bedrijfsgegevens zoals vermeld op vakconnectie.nl. */
 export const COMPANY = {
-  legalName: "Vakconnectie B.V.",
-  email: "hallo@vakconnectie.nl",
-  supportEmail: "support@vakconnectie.nl",
-  street: "Voorbeeldstraat 1",
-  postcode: "3511 AA",
-  city: "Utrecht",
-  kvk: "00000000",
+  legalName: "Vakconnectie V.O.F.",
+  city: "Haarlem",
+  country: "Nederland",
+  kvk: "42065725",
+  email: "info@vakconnectie.nl",
+  phoneDisplay: "+31 6 17 34 73 33",
+  phoneHref: "+31617347333",
+  /** Nummer waarop aanvragen via WhatsApp binnenkomen (internationaal formaat, alleen cijfers). */
+  whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "31617347333",
 };
+
+/**
+ * Accounts, dashboards en de beheeromgeving zijn gebouwd maar staan uit
+ * totdat authenticatie en een database gekoppeld zijn. Zet ACCOUNTS_ENABLED=true
+ * om ze te activeren.
+ */
+export const ACCOUNTS_ENABLED = process.env.ACCOUNTS_ENABLED === "true";
 
 export function absoluteUrl(path = "/") {
   return `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;

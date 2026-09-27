@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BadgeCheck, MapPin } from "lucide-react";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
@@ -121,21 +120,19 @@ export default async function ProfilePage(props: PageProps<"/vakman/[slug]">) {
             </ul>
           </section>
 
-          <section id="reviews" aria-labelledby="reviews-titel" className="scroll-mt-24">
-            <h2 id="reviews-titel" className="text-xl font-semibold">Beoordelingen</h2>
-            <div className="mt-5">
-              <RatingOverview summary={pro.rating} reviews={reviews} />
-            </div>
-            <div className="mt-2 divide-y divide-stone-200">
-              {reviews.map((r) => (
-                <ReviewItem key={r.id} review={r} companyName={pro.companyName} />
-              ))}
-            </div>
-            <p className="mt-2 text-sm text-stone-500">
-              Alleen opdrachtgevers die via Vakconnectie met dit bedrijf hebben gewerkt, kunnen een beoordeling plaatsen.{" "}
-              <Link href="/reviews" className="underline hover:text-brand-700">Zo werken reviews</Link>
-            </p>
-          </section>
+          {reviews.length > 0 && (
+            <section id="reviews" aria-labelledby="reviews-titel" className="scroll-mt-24">
+              <h2 id="reviews-titel" className="text-xl font-semibold">Beoordelingen</h2>
+              <div className="mt-5">
+                <RatingOverview summary={pro.rating} reviews={reviews} />
+              </div>
+              <div className="mt-2 divide-y divide-stone-200">
+                {reviews.map((r) => (
+                  <ReviewItem key={r.id} review={r} companyName={pro.companyName} />
+                ))}
+              </div>
+            </section>
+          )}
         </div>
 
         <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">

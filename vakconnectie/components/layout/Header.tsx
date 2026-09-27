@@ -15,7 +15,7 @@ const NAV = [
   { href: "/voor-vakmensen", label: "Voor vakmensen" },
 ];
 
-export function Header() {
+export function Header({ accountsEnabled = false }: { accountsEnabled?: boolean }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -60,12 +60,25 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-2 lg:flex">
-          <Link href="/inloggen" className="rounded-md px-3 py-2 text-[0.9375rem] font-medium text-stone-700 hover:text-stone-950">
-            Inloggen
-          </Link>
-          <ButtonLink href="/registreren" variant="secondary" size="sm" className="h-10 px-4">
-            Registreren
-          </ButtonLink>
+          {accountsEnabled ? (
+            <>
+              <Link href="/inloggen" className="rounded-md px-3 py-2 text-[0.9375rem] font-medium text-stone-700 hover:text-stone-950">
+                Inloggen
+              </Link>
+              <ButtonLink href="/registreren" variant="secondary" size="sm" className="h-10 px-4">
+                Registreren
+              </ButtonLink>
+            </>
+          ) : (
+            <>
+              <Link href="/contact" className="rounded-md px-3 py-2 text-[0.9375rem] font-medium text-stone-700 hover:text-stone-950">
+                Contact
+              </Link>
+              <ButtonLink href="/klus-plaatsen" size="sm" className="h-10 px-4">
+                Gratis aanvraag
+              </ButtonLink>
+            </>
+          )}
         </div>
 
         <div className="flex items-center gap-2 lg:hidden">
@@ -101,13 +114,26 @@ export function Header() {
                 {item.label}
               </Link>
             ))}
-            <div className="mt-6 grid grid-cols-2 gap-3">
-              <ButtonLink href="/inloggen" variant="secondary" size="lg" onClick={() => setOpen(false)}>
-                Inloggen
-              </ButtonLink>
-              <ButtonLink href="/registreren" size="lg" onClick={() => setOpen(false)}>
-                Registreren
-              </ButtonLink>
+            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              {accountsEnabled ? (
+                <>
+                  <ButtonLink href="/inloggen" variant="secondary" size="lg" onClick={() => setOpen(false)}>
+                    Inloggen
+                  </ButtonLink>
+                  <ButtonLink href="/registreren" size="lg" onClick={() => setOpen(false)}>
+                    Registreren
+                  </ButtonLink>
+                </>
+              ) : (
+                <>
+                  <ButtonLink href="/contact" variant="secondary" size="lg" onClick={() => setOpen(false)}>
+                    Contact
+                  </ButtonLink>
+                  <ButtonLink href="/aanmelden-als-vakman" variant="secondary" size="lg" onClick={() => setOpen(false)}>
+                    Aanmelden als vakman
+                  </ButtonLink>
+                </>
+              )}
             </div>
           </nav>
         </div>

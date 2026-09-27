@@ -129,7 +129,7 @@ export function RegisterForm({ role }: { role: "klant" | "vakman" }) {
         <p className="mt-2 leading-relaxed text-stone-600">
           We hebben een e-mail gestuurd naar <strong>{email}</strong>. Klik op de link in die e-mail om je account te
           activeren.
-          {role === "vakman" && " Daarna controleren we je bedrijfsgegevens. Meestal is je profiel binnen één werkdag zichtbaar."}
+          {role === "vakman" && " Daarna controleren we je KvK-inschrijving."}
         </p>
         <p className="mt-4 text-sm text-stone-500">Geen e-mail ontvangen? Kijk ook in je map met ongewenste e-mail.</p>
       </div>
@@ -227,7 +227,7 @@ export function ForgotPasswordForm() {
     return (
       <p role="status" className="leading-relaxed text-stone-700">
         Als er een account bij dit e-mailadres hoort, ontvang je binnen een paar minuten een e-mail met een link om een
-        nieuw wachtwoord in te stellen. De link is 1 uur geldig.
+        nieuw wachtwoord in te stellen.
       </p>
     );
   }

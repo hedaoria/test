@@ -21,7 +21,7 @@ export async function generateMetadata(props: PageProps<"/vakmensen/[stad]">): P
   if (!city) return {};
   return pageMetadata({
     title: `Vakman vinden in ${city.name}`,
-    description: `Op zoek naar een schilder, loodgieter, elektricien of aannemer in ${city.name}? Plaats gratis je klus en vergelijk vakmensen uit ${city.name} en omgeving.`,
+    description: `Op zoek naar een vakman in ${city.name}? Doe gratis en vrijblijvend een projectaanvraag. Vakconnectie helpt je bij het vinden van een passende zelfstandige vakman.`,
     path: `/vakmensen/${city.slug}`,
   });
 }
@@ -32,7 +32,6 @@ export default async function CityPage(props: PageProps<"/vakmensen/[stad]">) {
   if (!city) notFound();
 
   const [categories, pros, cities] = await Promise.all([listCategories(), professionalsNear(city, 35), listCities()]);
-  const covered = new Set(pros.flatMap((p) => p.categories));
 
   return (
     <>
@@ -42,13 +41,18 @@ export default async function CityPage(props: PageProps<"/vakmensen/[stad]">) {
           <div className="mt-6 grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-end">
             <div>
               <h1 className="text-3xl font-semibold sm:text-4xl">Vakman vinden in {city.name}</h1>
-              <p className="mt-3 max-w-2xl text-lg leading-relaxed text-stone-600">{city.intro}</p>
+              <p className="mt-3 max-w-2xl text-lg leading-relaxed text-stone-600">
+                {city.intro} Vertel ons wat je wilt laten doen, dan helpen we je bij het vinden van een passende
+                zelfstandige vakman. Gratis en vrijblijvend.
+              </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row lg:justify-end">
-              <ButtonLink href="/klus-plaatsen" size="lg">Plaats je klus</ButtonLink>
-              <ButtonLink href={`/vakmensen?plaats=${encodeURIComponent(city.name)}`} variant="secondary" size="lg">
-                Zoek in {city.name}
-              </ButtonLink>
+              <ButtonLink href="/klus-plaatsen" size="lg">Doe een projectaanvraag</ButtonLink>
+              {pros.length > 0 && (
+                <ButtonLink href={`/vakmensen?plaats=${encodeURIComponent(city.name)}`} variant="secondary" size="lg">
+                  Zoek in {city.name}
+                </ButtonLink>
+              )}
             </div>
           </div>
         </div>
@@ -56,40 +60,23 @@ export default async function CityPage(props: PageProps<"/vakmensen/[stad]">) {
 
       <section className="container-page py-12 sm:py-16">
         <h2 className="text-2xl font-semibold">Vakgebieden in {city.name}</h2>
-        <p className="mt-2 text-stone-600">Kies een vakgebied om vakmensen in {city.name} en omgeving te bekijken.</p>
+        <p className="mt-2 text-stone-600">Kies een vakgebied en start direct je projectaanvraag.</p>
         <div className="mt-6">
-          <CategoryGrid
-            items={categories}
-            hrefFor={(c) => `/vakmensen?vakgebied=${c.slug}&plaats=${encodeURIComponent(city.name)}&afstand=25`}
-          />
+          <CategoryGrid items={categories} hrefFor={(c) => `/klus-plaatsen?vakgebied=${c.slug}`} />
         </div>
       </section>
 
-      <section className="container-page pb-16">
-        <h2 className="text-2xl font-semibold">Vakmensen in en rond {city.name}</h2>
-        {pros.length > 0 ? (
-          <>
-            <JsonLd data={itemListLd(pros)} />
-            <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {pros.map((p) => (
-                <ProCard key={p.slug} pro={p} />
-              ))}
-            </div>
-          </>
-        ) : (
-          <p className="mt-4 text-stone-600">
-            Er staan nog geen vakmensen uit {city.name} op Vakconnectie. Plaats je klus, dan laten we het je weten zodra
-            er iemand in de buurt reageert.
-          </p>
-        )}
-        {covered.size < categories.length && pros.length > 0 && (
-          <p className="mt-6 text-sm text-stone-600">
-            Staat het vakgebied dat je zoekt er niet tussen?{" "}
-            <Link href="/klus-plaatsen" className="font-semibold text-brand-700 hover:underline">Plaats je klus</Link>{" "}
-            en laat vakmensen uit de regio zelf reageren.
-          </p>
-        )}
-      </section>
+      {pros.length > 0 && (
+        <section className="container-page pb-16">
+          <h2 className="text-2xl font-semibold">Vakmensen in en rond {city.name}</h2>
+          <JsonLd data={itemListLd(pros)} />
+          <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {pros.map((p) => (
+              <ProCard key={p.slug} pro={p} />
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="border-t border-stone-200 bg-stone-50 py-12">
         <div className="container-page">

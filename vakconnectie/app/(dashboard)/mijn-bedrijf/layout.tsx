@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
-import { DemoBanner } from "@/components/layout/DemoBanner";
+import { notFound } from "next/navigation";
+import { ACCOUNTS_ENABLED } from "@/lib/site";
 import { currentProfessionalSlug, professionalThreads, unreadCount } from "@/lib/dashboard";
 import { findProfessional, hasResponded, listJobsForProfessional, listNotifications } from "@/lib/repository";
 
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ProLayout({ children }: { children: React.ReactNode }) {
+  if (!ACCOUNTS_ENABLED) notFound();
   const [pro, jobs, threads, notifications] = await Promise.all([
     findProfessional(currentProfessionalSlug),
     listJobsForProfessional(currentProfessionalSlug),
@@ -20,7 +22,6 @@ export default async function ProLayout({ children }: { children: React.ReactNod
 
   return (
     <>
-      <DemoBanner />
       <DashboardShell
         title="Mijn bedrijf"
         userName={pro?.companyName ?? "Vakman"}
@@ -36,7 +37,6 @@ export default async function ProLayout({ children }: { children: React.ReactNod
           { href: "/mijn-bedrijf/reviews", label: "Reviews" },
           { href: "/mijn-bedrijf/werkgebied", label: "Werkgebied" },
           { href: "/mijn-bedrijf/beschikbaarheid", label: "Beschikbaarheid" },
-          { href: "/mijn-bedrijf/abonnement", label: "Abonnement en facturatie" },
           { href: "/mijn-bedrijf/instellingen", label: "Instellingen" },
         ]}
       >

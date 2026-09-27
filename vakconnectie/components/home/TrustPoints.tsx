@@ -1,26 +1,26 @@
 import clsx from "clsx";
-import { IdCard, Star, MessagesSquare, MapPinned } from "lucide-react";
+import { BadgeCheck, FileSignature, Handshake, HandCoins } from "lucide-react";
 
 const POINTS = [
   {
-    icon: IdCard,
-    title: "Duidelijke vakmanprofielen",
-    text: "Bedrijfsgegevens, ervaring, specialisaties en foto’s van eerder werk op één plek.",
+    icon: HandCoins,
+    title: "Gratis en vrijblijvend",
+    text: "Een projectaanvraag kost je niets en je zit nergens aan vast.",
   },
   {
-    icon: Star,
-    title: "Beoordelingen van klanten",
-    text: "Alleen opdrachtgevers die via Vakconnectie een klus lieten uitvoeren, kunnen een review schrijven.",
+    icon: Handshake,
+    title: "Persoonlijke bemiddeling",
+    text: "Wij helpen je bij het vinden van een zelfstandige vakman die past bij je project.",
   },
   {
-    icon: MessagesSquare,
-    title: "Direct contact",
-    text: "Stel je vragen rechtstreeks aan de vakman via berichten. Je telefoonnummer deel je pas als jij dat wilt.",
+    icon: BadgeCheck,
+    title: "KvK-inschrijving gecontroleerd",
+    text: "Voordat we een vakman aan je voorstellen, controleren we de inschrijving bij de Kamer van Koophandel.",
   },
   {
-    icon: MapPinned,
-    title: "Vakmensen uit jouw regio",
-    text: "Je ziet alleen vakmensen die in jouw omgeving werken, dus geen lange reistijden.",
+    icon: FileSignature,
+    title: "Heldere afspraken",
+    text: "Prijs, planning, werkzaamheden en garantie leg je samen met de vakman schriftelijk vast.",
   },
 ];
 

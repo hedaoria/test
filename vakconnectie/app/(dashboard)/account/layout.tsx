@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
-import { DemoBanner } from "@/components/layout/DemoBanner";
+import { notFound } from "next/navigation";
+import { ACCOUNTS_ENABLED } from "@/lib/site";
 import { currentCustomerId, customerThreads, unreadCount } from "@/lib/dashboard";
 import { findUser, listJobsForCustomer, listNotifications } from "@/lib/repository";
 
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default async function AccountLayout({ children }: { children: React.ReactNode }) {
+  if (!ACCOUNTS_ENABLED) notFound();
   const [user, jobs, threads, notifications] = await Promise.all([
     findUser(currentCustomerId),
     listJobsForCustomer(currentCustomerId),
@@ -21,7 +23,6 @@ export default async function AccountLayout({ children }: { children: React.Reac
 
   return (
     <>
-      <DemoBanner />
       <DashboardShell
         title="Mijn account"
         userName={user ? `${user.firstName} ${user.lastName}` : "Opdrachtgever"}

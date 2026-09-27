@@ -3,11 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import clsx from "clsx";
-import { Check, ImagePlus, X } from "lucide-react";
+import { Check } from "lucide-react";
 import { Button, ButtonLink } from "@/components/ui/Button";
+import { SendButtons } from "@/components/forms/SendButtons";
 import { categories, getCategory } from "@/lib/data/categories";
 import { TIMING_LABELS } from "@/lib/data/jobs";
 import { isValidPostcode, normalizePostcode, placeFromPostcode } from "@/lib/geo";
+import { composeMessage } from "@/lib/contact";
+import { COMPANY } from "@/lib/site";
 import { TIMINGS, validateJobStep, type JobErrors, type JobInput } from "@/lib/validation";
 
 const STEPS = [
@@ -15,9 +18,9 @@ const STEPS = [
   "Vertel meer over de opdracht",
   "Waar moet de klus worden uitgevoerd?",
   "Wanneer wil je dat de klus wordt uitgevoerd?",
-  "Foto’s toevoegen",
+  "Foto’s",
   "Je contactgegevens",
-  "Controleer je klus",
+  "Controleer en verstuur je aanvraag",
 ];
 
 const TIMING_HINTS: Record<string, string> = {
@@ -27,21 +30,14 @@ const TIMING_HINTS: Record<string, string> = {
   "in-overleg": "De planning bespreek je met de vakman.",
 };
 
-const MAX_PHOTOS = 6;
-
-interface PhotoItem {
-  name: string;
-  url: string;
-}
-
 export function JobWizard({
   initialCategory,
   initialTitle,
-  invitedProfessional,
+  preferredProfessional,
 }: {
   initialCategory?: string;
   initialTitle?: string;
-  invitedProfessional?: { slug: string; companyName: string };
+  preferredProfessional?: string;
 }) {
   const [step, setStep] = useState(1);
   const [values, setValues] = useState<JobInput>({
@@ -51,18 +47,13 @@ export function JobWizard({
     postcode: "",
     houseNumber: "",
     timing: "",
-    photos: [],
+    hasPhotos: false,
     name: "",
-    email: "",
     phone: "",
-    createAccount: true,
-    password: "",
-    invitedProfessional: invitedProfessional?.slug,
+    email: "",
   });
-  const [photos, setPhotos] = useState<PhotoItem[]>([]);
   const [errors, setErrors] = useState<JobErrors>({});
-  const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
-  const [jobId, setJobId] = useState<string>();
+  const [sentVia, setSentVia] = useState<"whatsapp" | "email">();
   const headingRef = useRef<HTMLHeadingElement>(null);
   const firstRender = useRef(true);
 
@@ -73,14 +64,7 @@ export function JobWizard({
     }
     headingRef.current?.focus();
     headingRef.current?.scrollIntoView({ block: "center", behavior: "smooth" });
-  }, [step, status]);
-
-  // Object-URL's opruimen bij verlaten van de pagina.
-  const photosRef = useRef(photos);
-  useEffect(() => {
-    photosRef.current = photos;
-  }, [photos]);
-  useEffect(() => () => photosRef.current.forEach((p) => URL.revokeObjectURL(p.url)), []);
+  }, [step, sentVia]);
 
   function set<K extends keyof JobInput>(key: K, value: JobInput[K]) {
     setValues((v) => ({ ...v, [key]: value }));
@@ -98,86 +82,61 @@ export function JobWizard({
     setStep((s) => Math.max(1, s - 1));
   }
 
-  function addPhotos(files: FileList | null) {
-    if (!files) return;
-    const room = MAX_PHOTOS - photos.length;
-    const added = Array.from(files)
-      .filter((f) => f.type.startsWith("image/") && f.size <= 10 * 1024 * 1024)
-      .slice(0, room)
-      .map((f) => ({ name: f.name, url: URL.createObjectURL(f) }));
-    setPhotos((p) => [...p, ...added]);
-  }
-
-  function removePhoto(i: number) {
-    setPhotos((p) => {
-      URL.revokeObjectURL(p[i]!.url);
-      return p.filter((_, idx) => idx !== i);
-    });
-  }
-
-  async function submit() {
-    setStatus("sending");
-    try {
-      const res = await fetch("/api/klussen", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...values, photos: photos.map((p) => p.name) }),
-      });
-      const data = (await res.json()) as { id?: string; errors?: JobErrors };
-      if (!res.ok) {
-        if (data.errors) setErrors(data.errors);
-        setStatus("error");
-        return;
-      }
-      setJobId(data.id);
-      setStatus("done");
-    } catch {
-      setStatus("error");
-    }
-  }
-
   const category = getCategory(values.category);
   const place = isValidPostcode(values.postcode) ? placeFromPostcode(values.postcode) : undefined;
+  const isSummary = step === STEPS.length;
 
-  if (status === "done") {
+  const message = composeMessage("Hallo Vakconnectie, hierbij mijn projectaanvraag.", [
+    ["Vakgebied", category?.name],
+    ["Project", values.title],
+    ["Omschrijving", values.description],
+    ["Adres", `${normalizePostcode(values.postcode)} ${values.houseNumber}${place ? `, ${place}` : ""}`],
+    ["Planning", values.timing ? TIMING_LABELS[values.timing] : undefined],
+    ["Foto's", values.hasPhotos ? "Ik stuur foto's mee in dit gesprek." : undefined],
+    ["Voorkeur voor vakman", preferredProfessional],
+    ["Naam", values.name],
+    ["Telefoon", values.phone],
+    ["E-mail", values.email],
+  ]);
+
+  if (sentVia) {
     return (
       <div className="card mx-auto max-w-2xl p-6 text-center sm:p-10">
         <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-brand-50 text-brand-700">
           <Check className="h-6 w-6" aria-hidden="true" />
         </span>
         <h2 ref={headingRef} tabIndex={-1} className="mt-5 text-2xl font-semibold outline-none">
-          Je klus is geplaatst
+          Nog één stap: verstuur het bericht
         </h2>
-        <p className="mx-auto mt-3 max-w-md text-stone-600">
-          {values.createAccount
-            ? `We hebben een e-mail gestuurd naar ${values.email}. Bevestig je e-mailadres, dan wordt je klus zichtbaar voor vakmensen in de buurt.`
-            : `We hebben een bevestiging gestuurd naar ${values.email}. Je krijgt een e-mail zodra een vakman reageert.`}
+        <p className="mx-auto mt-3 max-w-md leading-relaxed text-stone-600">
+          {sentVia === "whatsapp"
+            ? "WhatsApp is geopend met je aanvraag. Verstuur het bericht daar om je aanvraag bij ons af te ronden."
+            : "Je e-mailprogramma is geopend met je aanvraag. Verstuur de e-mail om je aanvraag bij ons af te ronden."}
+          {values.hasPhotos && " Voeg je foto’s toe aan hetzelfde bericht of stuur ze direct erachteraan."}
         </p>
-        {jobId && <p className="mt-2 text-sm text-stone-500">Klusnummer: {jobId}</p>}
+        <p className="mx-auto mt-3 max-w-md text-sm text-stone-500">
+          Opende er niets? Stuur je aanvraag dan naar{" "}
+          <a href={`mailto:${COMPANY.email}`} className="font-medium text-brand-700 hover:underline">{COMPANY.email}</a>.
+        </p>
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-          <ButtonLink href="/account" size="lg">Naar mijn klussen</ButtonLink>
-          <ButtonLink href="/" variant="secondary" size="lg">Terug naar home</ButtonLink>
+          <Button variant="secondary" size="lg" onClick={() => setSentVia(undefined)}>Terug naar mijn aanvraag</Button>
+          <ButtonLink href="/" variant="ghost" size="lg">Naar de homepage</ButtonLink>
         </div>
       </div>
     );
   }
 
-  const isSummary = step === STEPS.length;
-
   return (
     <div className="mx-auto max-w-2xl">
-      {invitedProfessional && (
+      {preferredProfessional && (
         <p className="mb-5 rounded-lg bg-brand-50 px-4 py-3 text-sm text-brand-900">
-          Je nodigt <strong>{invitedProfessional.companyName}</strong> uit voor deze klus. Andere vakmensen uit de buurt
-          kunnen ook reageren.
+          Je aanvraag vermeldt dat je voorkeur hebt voor <strong>{preferredProfessional}</strong>.
         </p>
       )}
 
       <div className="mb-6">
         <div className="flex items-center justify-between text-sm">
-          <span className="font-medium text-stone-700">
-            {isSummary ? "Overzicht" : `Stap ${step} van ${STEPS.length - 1}`}
-          </span>
+          <span className="font-medium text-stone-700">{isSummary ? "Overzicht" : `Stap ${step} van ${STEPS.length - 1}`}</span>
           {step > 1 && (
             <button type="button" onClick={back} className="font-medium text-brand-700 hover:underline">
               ← Vorige
@@ -194,8 +153,7 @@ export function JobWizard({
         noValidate
         onSubmit={(e) => {
           e.preventDefault();
-          if (isSummary) void submit();
-          else next();
+          if (!isSummary) next();
         }}
       >
         <h2 ref={headingRef} tabIndex={-1} className="text-xl font-semibold outline-none sm:text-2xl">
@@ -210,20 +168,11 @@ export function JobWizard({
                 <label
                   key={c.slug}
                   className={clsx(
-                    "flex min-h-14 cursor-pointer items-center rounded-lg border px-3 py-3 text-[0.9375rem] sm:px-4 font-medium transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brand-600",
-                    values.category === c.slug
-                      ? "border-brand-600 bg-brand-50 text-brand-900"
-                      : "border-stone-300 hover:border-stone-400",
+                    "flex min-h-14 cursor-pointer items-center rounded-lg border px-3 py-3 text-[0.9375rem] font-medium transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brand-600 sm:px-4",
+                    values.category === c.slug ? "border-brand-600 bg-brand-50 text-brand-900" : "border-stone-300 hover:border-stone-400",
                   )}
                 >
-                  <input
-                    type="radio"
-                    name="category"
-                    value={c.slug}
-                    checked={values.category === c.slug}
-                    onChange={() => set("category", c.slug)}
-                    className="sr-only"
-                  />
+                  <input type="radio" name="category" value={c.slug} checked={values.category === c.slug} onChange={() => set("category", c.slug)} className="sr-only" />
                   {c.name}
                 </label>
               ))}
@@ -235,7 +184,7 @@ export function JobWizard({
         {step === 2 && (
           <div className="mt-6 space-y-5">
             <div>
-              <label htmlFor="titel" className="label">Titel van je klus</label>
+              <label htmlFor="titel" className="label">Titel van je project</label>
               <input
                 id="titel"
                 value={values.title}
@@ -267,11 +216,11 @@ export function JobWizard({
                 className="input min-h-36 resize-y"
                 aria-invalid={Boolean(errors.description)}
                 aria-describedby="omschrijving-hulp"
-                maxLength={2000}
+                maxLength={1500}
               />
               <FieldError message={errors.description} />
               <p id="omschrijving-hulp" className="mt-1.5 text-sm text-stone-500">
-                Hoe duidelijker je omschrijving, hoe beter vakmensen kunnen reageren.
+                Hoe duidelijker je omschrijving, hoe beter we een passende vakman kunnen zoeken.
               </p>
             </div>
           </div>
@@ -287,7 +236,7 @@ export function JobWizard({
                   value={values.postcode}
                   onChange={(e) => set("postcode", e.target.value)}
                   onBlur={(e) => set("postcode", normalizePostcode(e.target.value))}
-                  placeholder="1234 AB"
+                  placeholder="2011 AB"
                   autoComplete="postal-code"
                   className="input uppercase"
                   aria-invalid={Boolean(errors.postcode)}
@@ -301,7 +250,6 @@ export function JobWizard({
                   value={values.houseNumber}
                   onChange={(e) => set("houseNumber", e.target.value)}
                   placeholder="12"
-                  inputMode="text"
                   autoComplete="address-line2"
                   className="input"
                   aria-invalid={Boolean(errors.houseNumber)}
@@ -311,9 +259,6 @@ export function JobWizard({
             </div>
             <FieldError message={errors.postcode ?? errors.houseNumber} />
             {place && <p className="mt-3 text-sm text-stone-700">Regio: <strong>{place}</strong></p>}
-            <p className="mt-4 rounded-lg bg-stone-50 px-4 py-3 text-sm text-stone-600">
-              Vakmensen zien alleen je postcodegebied en plaats. Je volledige adres deel je pas met de vakman die je kiest.
-            </p>
           </div>
         )}
 
@@ -329,14 +274,7 @@ export function JobWizard({
                     values.timing === t ? "border-brand-600 bg-brand-50" : "border-stone-300 hover:border-stone-400",
                   )}
                 >
-                  <input
-                    type="radio"
-                    name="timing"
-                    value={t}
-                    checked={values.timing === t}
-                    onChange={() => set("timing", t)}
-                    className="mt-1 h-4 w-4 accent-brand-700"
-                  />
+                  <input type="radio" name="timing" value={t} checked={values.timing === t} onChange={() => set("timing", t)} className="mt-1 h-4 w-4 accent-brand-700" />
                   <span>
                     <span className="block font-medium text-stone-900">{TIMING_LABELS[t]}</span>
                     <span className="block text-sm text-stone-600">{TIMING_HINTS[t]}</span>
@@ -349,114 +287,81 @@ export function JobWizard({
         )}
 
         {step === 5 && (
-          <div className="mt-6">
-            <p className="text-stone-600">
-              Foto&apos;s helpen vakmensen om je klus goed in te schatten. Dit is niet verplicht.
-            </p>
-            <ul className="mt-5 grid grid-cols-3 gap-2.5 sm:grid-cols-4">
-              {photos.map((p, i) => (
-                <li key={p.url} className="group relative aspect-square overflow-hidden rounded-lg bg-stone-100">
-                  {/* eslint-disable-next-line @next/next/no-img-element -- lokale voorvertoning via object-URL */}
-                  <img src={p.url} alt={`Foto ${i + 1}: ${p.name}`} className="h-full w-full object-cover" />
-                  <button
-                    type="button"
-                    onClick={() => removePhoto(i)}
-                    aria-label={`Verwijder ${p.name}`}
-                    className="absolute right-1.5 top-1.5 rounded-full bg-white/90 p-1 text-stone-700 shadow hover:bg-white"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                </li>
+          <fieldset className="mt-6">
+            <legend className="text-stone-600">
+              Foto’s helpen om je project goed in te schatten. Je kunt ze toevoegen aan je WhatsApp-bericht of e-mail,
+              direct nadat je je aanvraag verstuurt.
+            </legend>
+            <div className="mt-5 grid gap-2.5 sm:grid-cols-2">
+              {[
+                { v: true, label: "Ja, ik stuur foto’s mee" },
+                { v: false, label: "Nee, geen foto’s" },
+              ].map((o) => (
+                <label
+                  key={String(o.v)}
+                  className={clsx(
+                    "flex min-h-14 cursor-pointer items-center gap-3 rounded-lg border px-4 py-3 font-medium transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brand-600",
+                    values.hasPhotos === o.v ? "border-brand-600 bg-brand-50" : "border-stone-300 hover:border-stone-400",
+                  )}
+                >
+                  <input type="radio" name="fotos" checked={values.hasPhotos === o.v} onChange={() => set("hasPhotos", o.v)} className="h-4 w-4 accent-brand-700" />
+                  {o.label}
+                </label>
               ))}
-              {photos.length < MAX_PHOTOS && (
-                <li>
-                  <label className="flex aspect-square cursor-pointer flex-col items-center justify-center gap-1.5 rounded-lg border-2 border-dashed border-stone-300 text-sm font-medium text-stone-600 transition-colors hover:border-brand-600 hover:text-brand-700 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brand-600">
-                    <ImagePlus className="h-6 w-6" aria-hidden="true" />
-                    Toevoegen
-                    <input type="file" accept="image/*" multiple className="sr-only" onChange={(e) => { addPhotos(e.target.files); e.target.value = ""; }} />
-                  </label>
-                </li>
-              )}
-            </ul>
-            <p className="mt-3 text-sm text-stone-500">Maximaal {MAX_PHOTOS} foto&apos;s van elk maximaal 10 MB.</p>
-          </div>
+            </div>
+          </fieldset>
         )}
 
         {step === 6 && (
           <div className="mt-6 space-y-5">
-            <p className="text-sm text-stone-600">
-              Heb je al een account?{" "}
-              <Link href="/inloggen?volgende=/klus-plaatsen" className="font-semibold text-brand-700 hover:underline">Inloggen</Link>
-            </p>
             <Field id="naam" label="Naam" error={errors.name}>
               <input id="naam" value={values.name} onChange={(e) => set("name", e.target.value)} autoComplete="name" className="input" aria-invalid={Boolean(errors.name)} />
+            </Field>
+            <Field id="telefoon" label="Telefoonnummer" error={errors.phone}>
+              <input id="telefoon" type="tel" value={values.phone} onChange={(e) => set("phone", e.target.value)} autoComplete="tel" className="input" aria-invalid={Boolean(errors.phone)} />
             </Field>
             <Field id="email" label="E-mailadres" error={errors.email}>
               <input id="email" type="email" value={values.email} onChange={(e) => set("email", e.target.value)} autoComplete="email" className="input" aria-invalid={Boolean(errors.email)} />
             </Field>
-            <Field id="telefoon" label="Telefoonnummer (optioneel)" error={errors.phone} hint="Alleen zichtbaar voor de vakman die jij kiest.">
-              <input id="telefoon" type="tel" value={values.phone} onChange={(e) => set("phone", e.target.value)} autoComplete="tel" className="input" aria-invalid={Boolean(errors.phone)} />
-            </Field>
-            <label className="flex cursor-pointer items-start gap-3">
-              <input type="checkbox" checked={values.createAccount} onChange={(e) => set("createAccount", e.target.checked)} className="mt-1 h-4 w-4 accent-brand-700" />
-              <span>
-                <span className="block font-medium text-stone-900">Maak meteen een account aan</span>
-                <span className="block text-sm text-stone-600">Zo kun je reacties bekijken, berichten sturen en later een review schrijven.</span>
-              </span>
-            </label>
-            {values.createAccount && (
-              <Field id="wachtwoord" label="Kies een wachtwoord" error={errors.password} hint="Minimaal 8 tekens.">
-                <input id="wachtwoord" type="password" value={values.password} onChange={(e) => set("password", e.target.value)} autoComplete="new-password" className="input" aria-invalid={Boolean(errors.password)} />
-              </Field>
-            )}
+            <p className="text-sm text-stone-500">Vul minimaal een telefoonnummer of e-mailadres in, zodat we contact met je kunnen opnemen.</p>
           </div>
         )}
 
         {isSummary && (
-          <dl className="mt-6 divide-y divide-stone-200 rounded-xl border border-stone-200">
-            <SummaryRow label="Vakgebied" onEdit={() => setStep(1)}>{category?.name}</SummaryRow>
-            <SummaryRow label="Klus" onEdit={() => setStep(2)}>
-              <span className="font-medium">{values.title}</span>
-              <span className="mt-1 block whitespace-pre-line text-stone-600">{values.description}</span>
-            </SummaryRow>
-            <SummaryRow label="Locatie" onEdit={() => setStep(3)}>
-              {normalizePostcode(values.postcode)} {values.houseNumber}
-              {place ? `, ${place}` : ""}
-            </SummaryRow>
-            <SummaryRow label="Planning" onEdit={() => setStep(4)}>{values.timing && TIMING_LABELS[values.timing]}</SummaryRow>
-            <SummaryRow label="Foto's" onEdit={() => setStep(5)}>
-              {photos.length ? `${photos.length} toegevoegd` : "Geen foto's"}
-            </SummaryRow>
-            <SummaryRow label="Contact" onEdit={() => setStep(6)}>
-              {values.name}, {values.email}
-              {values.phone ? `, ${values.phone}` : ""}
-            </SummaryRow>
-          </dl>
+          <>
+            <dl className="mt-6 divide-y divide-stone-200 rounded-xl border border-stone-200">
+              <SummaryRow label="Vakgebied" onEdit={() => setStep(1)}>{category?.name}</SummaryRow>
+              <SummaryRow label="Project" onEdit={() => setStep(2)}>
+                <span className="font-medium">{values.title}</span>
+                <span className="mt-1 block whitespace-pre-line text-stone-600">{values.description}</span>
+              </SummaryRow>
+              <SummaryRow label="Locatie" onEdit={() => setStep(3)}>
+                {normalizePostcode(values.postcode)} {values.houseNumber}
+                {place ? `, ${place}` : ""}
+              </SummaryRow>
+              <SummaryRow label="Planning" onEdit={() => setStep(4)}>{values.timing && TIMING_LABELS[values.timing]}</SummaryRow>
+              <SummaryRow label="Foto's" onEdit={() => setStep(5)}>{values.hasPhotos ? "Stuur ik mee" : "Geen foto's"}</SummaryRow>
+              <SummaryRow label="Contact" onEdit={() => setStep(6)}>
+                {[values.name, values.phone, values.email].filter(Boolean).join(", ")}
+              </SummaryRow>
+            </dl>
+            <div className="mt-6 rounded-lg bg-stone-50 p-4 text-sm leading-relaxed text-stone-600">
+              Je projectaanvraag is gratis en vrijblijvend. Als je op een van de knoppen klikt, opent je eigen WhatsApp of
+              e-mailprogramma met dit overzicht als bericht. Pas als je dat bericht verstuurt, ontvangen wij je aanvraag.
+            </div>
+            <SendButtons className="mt-6" message={message} subject={`Projectaanvraag: ${values.title}`} onSent={setSentVia} />
+            <p className="mt-4 text-center text-sm text-stone-500 sm:text-left">
+              Lees in ons <Link href="/privacybeleid" className="underline">privacybeleid</Link> hoe we met je gegevens omgaan.
+            </p>
+          </>
         )}
 
-        {status === "error" && (
-          <p role="alert" className="mt-5 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-800">
-            Het plaatsen is niet gelukt. Controleer je gegevens en probeer het opnieuw.
-          </p>
-        )}
-
-        <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
-          {step === 5 && photos.length === 0 ? (
-            <button type="button" onClick={() => setStep(6)} className="h-12 font-medium text-stone-600 hover:text-stone-900">
-              Overslaan
-            </button>
-          ) : (
-            <span className="hidden sm:block" />
-          )}
-          <Button type="submit" size="lg" className="w-full sm:w-auto" disabled={status === "sending"}>
-            {isSummary ? (status === "sending" ? "Bezig met plaatsen…" : "Klus plaatsen") : step === 6 ? "Naar overzicht" : "Volgende"}
-          </Button>
-        </div>
-        {isSummary && (
-          <p className="mt-4 text-center text-sm text-stone-500 sm:text-right">
-            Door je klus te plaatsen ga je akkoord met de{" "}
-            <Link href="/algemene-voorwaarden" className="underline">algemene voorwaarden</Link>.
-          </p>
+        {!isSummary && (
+          <div className="mt-8 flex justify-end">
+            <Button type="submit" size="lg" className="w-full sm:w-auto">
+              {step === 6 ? "Naar overzicht" : "Volgende"}
+            </Button>
+          </div>
         )}
       </form>
     </div>
@@ -468,12 +373,12 @@ function FieldError({ message }: { message?: string }) {
   return <p role="alert" className="mt-1.5 text-sm text-red-700">{message}</p>;
 }
 
-function Field({ id, label, error, hint, children }: { id: string; label: string; error?: string; hint?: string; children: React.ReactNode }) {
+function Field({ id, label, error, children }: { id: string; label: string; error?: string; children: React.ReactNode }) {
   return (
     <div>
       <label htmlFor={id} className="label">{label}</label>
       {children}
-      {error ? <FieldError message={error} /> : hint && <p className="mt-1.5 text-sm text-stone-500">{hint}</p>}
+      <FieldError message={error} />
     </div>
   );
 }
@@ -482,11 +387,9 @@ function SummaryRow({ label, onEdit, children }: { label: string; onEdit: () => 
   return (
     <div className="grid grid-cols-[1fr_auto] gap-x-4 gap-y-1 p-4 sm:grid-cols-[8rem_1fr_auto]">
       <dt className="text-sm font-medium text-stone-500">{label}</dt>
-      <dd className="col-span-2 row-start-2 text-[0.9375rem] text-stone-900 sm:col-span-1 sm:row-start-1 sm:col-start-2">{children}</dd>
+      <dd className="col-span-2 row-start-2 text-[0.9375rem] text-stone-900 sm:col-span-1 sm:col-start-2 sm:row-start-1">{children}</dd>
       <dd className="col-start-2 row-start-1 sm:col-start-3">
-        <button type="button" onClick={onEdit} className="text-sm font-medium text-brand-700 hover:underline">
-          Wijzig
-        </button>
+        <button type="button" onClick={onEdit} className="text-sm font-medium text-brand-700 hover:underline">Wijzig</button>
       </dd>
     </div>
   );
