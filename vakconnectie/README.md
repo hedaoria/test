@@ -1,8 +1,8 @@
 # Vakconnectie
 
-Nederlands platform dat opdrachtgevers in contact brengt met vakmensen voor
-werk in en rond het huis. Gebouwd met Next.js 16 (App Router), React 19,
-TypeScript en Tailwind CSS 4.
+Website van Vakconnectie V.O.F. (Haarlem, KvK 42065725): een bemiddelingsbedrijf
+dat klanten helpt bij het vinden van passende zelfstandige vakmensen.
+Gebouwd met Next.js 16 (App Router), React 19, TypeScript en Tailwind CSS 4.
 
 ```bash
 npm install
@@ -11,48 +11,34 @@ npm run build && npm start
 npm run lint
 ```
 
-## Wat zit erin
+## Bedrijfsregels (niet wijzigen zonder akkoord)
 
-**Publieke site** (`app/(site)`)
+- Een projectaanvraag is voor klanten gratis en vrijblijvend.
+- Vakconnectie bemiddelt; het werk wordt uitgevoerd door zelfstandige vakmensen.
+- De KvK-inschrijving van een vakman wordt gecontroleerd vóór introductie.
+- Klant en vakman maken zelf schriftelijke afspraken over prijs, planning, werkzaamheden en garantie.
+- Aanvragen, aanmeldingen en contactberichten worden verstuurd via WhatsApp of e-mail: het formulier opent de eigen app van de bezoeker met een ingevuld bericht. Er wordt niets verstuurd of opgeslagen voordat de bezoeker dat bericht zelf verstuurt (zie `lib/contact.ts` en `components/forms/SendButtons.tsx`).
 
-| URL | Pagina |
+Bedrijfs- en contactgegevens staan op één plek: `lib/site.ts`.
+
+## Pagina's
+
+| URL | Inhoud |
 | --- | --- |
-| `/` | Homepage: hero met klusinvoer, hoe het werkt, vakgebieden, zoeken, vertrouwen, sectie voor vakmensen, regio's |
-| `/vakmensen` | Zoeken op vakgebied, postcode, plaats en afstand (gewone GET-form, werkt zonder JS) |
-| `/vakmensen/[stad]` | SEO-landingspagina's voor 12 steden |
-| `/[vakgebied]` | Categoriepagina's, bijv. `/schilder`, `/loodgieter` (meervoud zoals `/schilders` → 308 redirect) |
-| `/vakman/[slug]` | Openbaar profiel met projecten, reviews, werkgebied, bedrijfsgegevens, CTA's |
-| `/klus-plaatsen` | Stap-voor-stap flow (6 stappen + overzicht), accepteert `?vakgebied=`, `?wat=`, `?vakman=` |
-| `/hoe-werkt-het`, `/voor-vakmensen`, `/reviews`, `/veelgestelde-vragen` | Uitleg, abonnementen, FAQ |
-| `/inloggen`, `/registreren`, `/wachtwoord-vergeten`, `/wachtwoord-herstellen`, `/e-mail-bevestigen` | Accountflows |
-| `/over-ons`, `/contact`, `/blog`, `/vacatures`, juridische pagina's | Overig |
+| `/` | Homepage: aanvraag starten, direct contact, werkwijze, vakgebieden, vertrouwen, vakmensen, regio's |
+| `/klus-plaatsen` | Projectaanvraag in stappen, versturen via WhatsApp of e-mail (`?vakgebied=`, `?wat=`, `?vakman=`) |
+| `/aanmelden-als-vakman` | Aanmelding zelfstandig vakman met KvK-nummer, via WhatsApp of e-mail |
+| `/vakmensen`, `/vakmensen/[stad]`, `/[vakgebied]`, `/vakman/[slug]` | Vind een vakman, regio- en vakgebiedpagina's, openbare profielen |
+| `/hoe-werkt-het`, `/voor-vakmensen`, `/veelgestelde-vragen`, `/over-ons`, `/contact` | Informatie |
+| `/privacybeleid`, `/cookiebeleid`, `/algemene-voorwaarden` | Juridisch (`/privacy-policy.html` → `/privacybeleid`) |
 
-**Dashboards** (`app/(dashboard)`, noindex)
+## Nog aan te vullen met echte gegevens
 
-- `/account`: opdrachtgever (klussen, reacties, berichten, opgeslagen vakmensen, reviews schrijven, notificaties, instellingen)
-- `/mijn-bedrijf`: vakman (overzicht, nieuwe opdrachten uit de regio, reageren, berichten, profiel, reviews, werkgebied, beschikbaarheid, abonnement, instellingen)
-- `/beheer`: beheeromgeving (gebruikers, vakmensen goedkeuren, blokkeren, opdrachten, reviews, meldingen, categorieën)
+- **Algemene voorwaarden**: plak de officiële tekst in `termsSections` in `lib/data/legal.ts`. Tot dan verwijst de pagina naar contact en wordt hij niet geïndexeerd.
+- **Vakmanprofielen en reviews**: `lib/data/professionals.ts` en `lib/data/reviews.ts` zijn leeg. Zolang ze leeg zijn, tonen pagina's geen profielen, zoekresultaten of beoordelingen. Voeg alleen echte, gecontroleerde vakmensen en echte beoordelingen toe; zoeken, profielpagina's en structured data werken dan automatisch.
+- **Vakgebieden en regio's**: `lib/data/categories.ts` en `lib/data/cities.ts`. Stem af op waar Vakconnectie daadwerkelijk bemiddelt.
+- **Fotografie**: `<Photo src=…>` toont een rustige placeholder zolang er geen eigen foto is.
 
-**SEO**: unieke titles/descriptions per pagina, canonical URL's, `sitemap.xml`,
-`robots.txt`, OG-afbeelding en JSON-LD (Organization, WebSite, BreadcrumbList,
-Service, FAQPage, ItemList, HomeAndConstructionBusiness met AggregateRating en Review, Article).
+## Klaar voor later (staat uit)
 
-## Architectuur en uitbreiden
-
-- `lib/types.ts`: domeinmodel (gebruikers met rollen, vakmensen, klussen, reacties, berichten, reviews, meldingen, abonnementen).
-- `lib/repository.ts`: **de enige plek waar pagina's data ophalen**. Nu leest dit uit de demo-data in `lib/data/`; vervang de implementatie door databasequeries (bijv. Postgres + Prisma/Drizzle) zonder pagina's aan te passen.
-- `lib/auth.ts` + `proxy.ts`: rollen, rechten en een toegangscontrole voor `/account`, `/mijn-bedrijf` en `/beheer` (aan te zetten met `AUTH_ENABLED=true` zodra er een sessie is). `lib/dashboard.ts` bevat de tijdelijke demo-gebruikers.
-- `lib/validation.ts`: gedeelde validatie voor formulieren en API-routes.
-- `lib/geo.ts`: postcode/plaats → coördinaten (per postcodegebied, benaderd) en afstandsberekening. Vervang door een echte postcode-API (bijv. PDOK Locatieserver).
-- `app/api/*`: klus plaatsen, contact, registreren, inloggen, wachtwoord vergeten/herstellen. Deze valideren de invoer; opslaan, e-mails versturen (verificatie, notificaties, wachtwoordherstel), foto-upload en betalingen zijn gemarkeerd met `TODO`.
-- Interactieve dashboardacties (berichten, reageren, goedkeuren, blokkeren) werken nu lokaal in de browser en zijn bedoeld om aan server actions/API-routes te koppelen.
-
-## Vóór livegang
-
-1. `NEXT_PUBLIC_DEMO_MODE=false` en de fictieve demo-data in `lib/data/` vervangen door echte data (de demobalk bovenaan verdwijnt dan).
-2. Bedrijfsgegevens in `lib/site.ts` invullen.
-3. Eigen fotografie toevoegen in `public/images/` en doorgeven aan `<Photo src=…>` (hero, sectie voor vakmensen, over ons, projectfoto's). Tot die tijd tonen we bewust rustige placeholders in plaats van stockfoto's.
-4. Authenticatie, database, e-maildienst en betaalprovider koppelen (zie `TODO`'s).
-5. Juridische teksten laten controleren; de abonnementsprijzen in `lib/data/platform.ts` zijn een voorstel.
-
-Huisstijl: één merkkleur (`brand`, groen) plus warme neutrale tinten (`stone`), lettertype Figtree. Zie `app/globals.css`.
+Accounts, dashboards voor klanten (`/account`) en vakmensen (`/mijn-bedrijf`), berichten, reviews schrijven en de beheeromgeving (`/beheer`) zijn gebouwd, maar staan uit tot authenticatie en een database zijn gekoppeld. Zet dan `ACCOUNTS_ENABLED=true`. Alle data loopt via `lib/repository.ts`, zodat alleen die laag op de database hoeft te worden aangesloten.
