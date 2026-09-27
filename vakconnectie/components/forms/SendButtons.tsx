@@ -31,32 +31,34 @@ export function SendButtons({
   onSent?: (channel: "whatsapp" | "email") => void;
   className?: string;
 }) {
-  function open(channel: "whatsapp" | "email") {
-    if (onBeforeSend && !onBeforeSend()) return;
-    const url = channel === "whatsapp" ? whatsappUrl(message) : mailtoUrl(subject, message);
-    if (channel === "whatsapp") window.open(url, "_blank", "noopener");
-    else window.location.href = url;
+  function handleClick(e: React.MouseEvent, channel: "whatsapp" | "email") {
+    if (onBeforeSend && !onBeforeSend()) {
+      e.preventDefault();
+      return;
+    }
     onSent?.(channel);
   }
 
   return (
     <div className={clsx("grid gap-3 sm:grid-cols-2", className)}>
-      <button
-        type="button"
-        onClick={() => open("whatsapp")}
+      <a
+        href={whatsappUrl(message)}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={(e) => handleClick(e, "whatsapp")}
         className="inline-flex h-13 items-center justify-center gap-2.5 rounded-lg bg-brand-700 px-5 font-semibold text-white transition-colors hover:bg-brand-800"
       >
         <WhatsAppIcon className="h-5 w-5" />
         Verstuur via WhatsApp
-      </button>
-      <button
-        type="button"
-        onClick={() => open("email")}
+      </a>
+      <a
+        href={mailtoUrl(subject, message)}
+        onClick={(e) => handleClick(e, "email")}
         className="inline-flex h-13 items-center justify-center gap-2.5 rounded-lg border border-stone-300 bg-white px-5 font-semibold text-stone-900 transition-colors hover:border-stone-400 hover:bg-stone-50"
       >
         <Mail className="h-5 w-5" aria-hidden="true" />
         Verstuur via e-mail
-      </button>
+      </a>
     </div>
   );
 }

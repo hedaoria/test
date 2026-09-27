@@ -29,6 +29,7 @@ export function Header({ accountsEnabled = false }: { accountsEnabled?: boolean 
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
   return (
+    <>
     <header className="sticky top-0 z-40 border-b border-stone-200/80 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/85">
       <div className="container-page flex h-16 items-center justify-between gap-4 lg:h-[4.5rem]">
         <Logo />
@@ -98,8 +99,10 @@ export function Header({ accountsEnabled = false }: { accountsEnabled?: boolean 
         </div>
       </div>
 
+    </header>
+
       {open && (
-        <div id="mobiel-menu" className="fixed inset-x-0 bottom-0 top-16 z-40 overflow-y-auto bg-white lg:hidden">
+        <div id="mobiel-menu" className="fixed inset-x-0 bottom-0 top-16 z-50 overflow-y-auto bg-white lg:hidden">
           <nav aria-label="Mobiel menu" className="container-page flex flex-col py-4">
             {NAV.map((item) => (
               <Link
@@ -138,6 +141,6 @@ export function Header({ accountsEnabled = false }: { accountsEnabled?: boolean 
           </nav>
         </div>
       )}
-    </header>
+    </>
   );
 }
