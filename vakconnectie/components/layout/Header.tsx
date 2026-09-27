@@ -88,7 +88,7 @@ export function Header({ locale, accountsEnabled = false }: { locale: Locale; ac
                     <span
                       aria-hidden="true"
                       className={clsx(
-                        "absolute inset-x-3 -bottom-[1px] h-0.5 rounded-full bg-brand-600 transition-opacity",
+                        "absolute inset-x-3 -bottom-[1px] h-0.5 rounded-full bg-brand-400 transition-opacity",
                         isActive(item.href) ? "opacity-100" : "opacity-0",
                       )}
                     />

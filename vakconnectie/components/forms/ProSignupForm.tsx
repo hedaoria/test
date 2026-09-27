@@ -97,7 +97,7 @@ export function ProSignupForm({ locale }: { locale: Locale }) {
                   type="checkbox"
                   checked={checked}
                   onChange={() => set("categories", checked ? v.categories.filter((x) => x !== c.slug) : [...v.categories, c.slug])}
-                  className="h-4 w-4 accent-brand-700"
+                  className="h-4 w-4 accent-brand-500"
                 />
                 {categoryText(c, locale).name}
               </label>

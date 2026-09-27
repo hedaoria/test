@@ -42,7 +42,7 @@ export function RatingOverview({ summary, reviews, locale = "nl" }: { summary: R
             <div key={key} className="grid grid-cols-[8.5rem_1fr_2rem] items-center gap-3 text-sm">
               <dt className="text-stone-700">{label[locale]}</dt>
               <dd className="h-1.5 overflow-hidden rounded-full bg-stone-200">
-                <span className="block h-full rounded-full bg-brand-600" style={{ width: `${(v / 5) * 100}%` }} />
+                <span className="block h-full rounded-full bg-brand-400" style={{ width: `${(v / 5) * 100}%` }} />
               </dd>
               <dd className="text-right font-medium text-stone-900">{formatRating(v, locale)}</dd>
             </div>

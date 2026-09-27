@@ -65,7 +65,7 @@ export default async function ProOverviewPage() {
                 <span className="font-semibold">{pct}%</span>
               </div>
               <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-stone-200">
-                <div className="h-full rounded-full bg-brand-600" style={{ width: `${pct}%` }} />
+                <div className="h-full rounded-full bg-brand-400" style={{ width: `${pct}%` }} />
               </div>
               <ul className="mt-4 space-y-2 text-sm">
                 {checks.map((c) => (

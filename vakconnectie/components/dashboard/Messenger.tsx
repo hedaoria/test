@@ -101,7 +101,7 @@ export function Messenger({
                       <span className={clsx("truncate text-sm", n ? "text-stone-900" : "text-stone-600")}>
                         {m?.photo ? "Foto" : m?.text}
                       </span>
-                      {n > 0 && <span className="shrink-0 rounded-full bg-brand-700 px-1.5 text-xs font-semibold text-white">{n}</span>}
+                      {n > 0 && <span className="shrink-0 rounded-full bg-brand-400 px-1.5 text-xs font-semibold text-stone-950">{n}</span>}
                     </span>
                   </span>
                 </button>
@@ -139,18 +139,18 @@ export function Messenger({
                     </p>
                   )}
                   <div className={clsx("flex", mine ? "justify-end" : "justify-start")}>
-                    <div className={clsx("max-w-[80%] rounded-2xl px-3.5 py-2.5 text-[0.9375rem] leading-relaxed", mine ? "rounded-br-md bg-brand-700 text-white" : "rounded-bl-md border border-stone-200 bg-white text-stone-900")}>
+                    <div className={clsx("max-w-[80%] rounded-2xl px-3.5 py-2.5 text-[0.9375rem] leading-relaxed", mine ? "rounded-br-md bg-brand-400 text-stone-950" : "rounded-bl-md border border-stone-200 bg-white text-stone-900")}>
                       {m.photo &&
                         (m.photo.url ? (
                           // eslint-disable-next-line @next/next/no-img-element -- lokale voorvertoning
                           <img src={m.photo.url} alt={m.photo.name} className="mb-1 max-h-60 rounded-lg" />
                         ) : (
-                          <span className={clsx("mb-1 flex items-center gap-2 rounded-lg px-3 py-6 text-sm", mine ? "bg-brand-800" : "bg-stone-100 text-stone-600")}>
+                          <span className={clsx("mb-1 flex items-center gap-2 rounded-lg px-3 py-6 text-sm", mine ? "bg-brand-300" : "bg-stone-100 text-stone-600")}>
                             <Paperclip className="h-4 w-4" aria-hidden="true" /> {m.photo.name}
                           </span>
                         ))}
                       {m.text && <p className="whitespace-pre-line">{m.text}</p>}
-                      <p className={clsx("mt-1 text-right text-[0.6875rem]", mine ? "text-brand-100" : "text-stone-400")}>
+                      <p className={clsx("mt-1 text-right text-[0.6875rem]", mine ? "text-stone-700" : "text-stone-400")}>
                         <time dateTime={m.sentAt}>{formatTime(m.sentAt)}</time>
                         {mine && (m.read ? " · Gelezen" : " · Verzonden")}
                       </p>
@@ -202,7 +202,7 @@ export function Messenger({
                 placeholder="Schrijf een bericht…"
                 className="input max-h-40 min-h-11 flex-1 resize-none py-2.5"
               />
-              <button type="submit" className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-brand-700 text-white hover:bg-brand-800 disabled:opacity-50" aria-label="Versturen" disabled={!text.trim() && !photo}>
+              <button type="submit" className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-brand-400 text-stone-950 hover:bg-brand-500 disabled:opacity-50" aria-label="Versturen" disabled={!text.trim() && !photo}>
                 <Send className="h-5 w-5" />
               </button>
             </div>

@@ -74,7 +74,7 @@ export function DashboardShell({
                   aria-current={active(item) ? "page" : undefined}
                   className={clsx(
                     "inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-medium",
-                    active(item) ? "bg-brand-700 text-white" : "text-stone-700 hover:bg-stone-100",
+                    active(item) ? "bg-brand-400 text-stone-950" : "text-stone-700 hover:bg-stone-100",
                   )}
                 >
                   {item.label}
@@ -116,7 +116,7 @@ export function DashboardShell({
 
 function Count({ n, inverted }: { n: number; inverted?: boolean }) {
   return (
-    <span className={clsx("rounded-full px-1.5 text-xs font-semibold", inverted ? "bg-white/20 text-white" : "bg-brand-100 text-brand-800")}>
+    <span className={clsx("rounded-full px-1.5 text-xs font-semibold", inverted ? "bg-stone-950/10 text-stone-950" : "bg-brand-100 text-brand-800")}>
       {n}
     </span>
   );

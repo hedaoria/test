@@ -9,10 +9,11 @@ const base =
   "inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-60 whitespace-nowrap";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-brand-700 text-white hover:bg-brand-800 active:bg-brand-900",
+  primary: "bg-brand-400 text-stone-950 hover:bg-brand-500 active:bg-brand-600",
   secondary: "border border-stone-300 bg-white text-stone-900 hover:border-stone-400 hover:bg-stone-50",
   ghost: "text-brand-700 hover:bg-brand-50",
-  light: "bg-white text-brand-800 hover:bg-brand-50",
+  // Voor gebruik op een geel vlak.
+  light: "bg-stone-950 text-white hover:bg-stone-800",
 };
 
 const sizes: Record<Size, string> = {

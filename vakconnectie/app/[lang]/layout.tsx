@@ -28,7 +28,7 @@ export async function generateMetadata(props: LayoutProps<"/[lang]">): Promise<M
 }
 
 export const viewport: Viewport = {
-  themeColor: "#1f523d",
+  themeColor: "#FFC72C",
   width: "device-width",
   initialScale: 1,
 };

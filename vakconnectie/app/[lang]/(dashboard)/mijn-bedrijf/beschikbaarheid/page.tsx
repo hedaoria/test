@@ -25,7 +25,7 @@ export default async function AvailabilityPage() {
               <legend className="label">Status</legend>
               {OPTIONS.map((o) => (
                 <label key={o.value} className="flex cursor-pointer items-start gap-3 rounded-lg border border-stone-200 px-4 py-3 has-[:checked]:border-brand-600 has-[:checked]:bg-brand-50">
-                  <input type="radio" name="status" value={o.value} defaultChecked={pro.availability.status === o.value} className="mt-1 h-4 w-4 accent-brand-700" />
+                  <input type="radio" name="status" value={o.value} defaultChecked={pro.availability.status === o.value} className="mt-1 h-4 w-4 accent-brand-500" />
                   <span>
                     <span className="block font-medium">{o.label}</span>
                     <span className="block text-sm text-stone-600">{o.hint}</span>

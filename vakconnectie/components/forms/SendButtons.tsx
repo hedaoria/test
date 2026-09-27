@@ -52,7 +52,7 @@ export function SendButtons({
         target="_blank"
         rel="noopener noreferrer"
         onClick={(e) => handleClick(e, "whatsapp")}
-        className="inline-flex h-13 items-center justify-center gap-2.5 rounded-lg bg-brand-700 px-5 font-semibold text-white transition-colors hover:bg-brand-800"
+        className="inline-flex h-13 items-center justify-center gap-2.5 rounded-lg bg-brand-400 px-5 font-semibold text-stone-950 transition-colors hover:bg-brand-500"
       >
         <WhatsAppIcon className="h-5 w-5" />
         {t.whatsapp}

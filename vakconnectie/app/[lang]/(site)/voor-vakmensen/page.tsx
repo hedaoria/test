@@ -63,10 +63,10 @@ export default async function ForProsPage(props: PageProps<"/[lang]/voor-vakmens
       </section>
 
       <section className="container-page pb-16">
-        <div className="flex flex-col items-start justify-between gap-6 rounded-2xl bg-brand-800 p-8 text-white sm:flex-row sm:items-center sm:p-10">
+        <div className="flex flex-col items-start justify-between gap-6 rounded-2xl bg-brand-400 p-8 text-stone-950 sm:flex-row sm:items-center sm:p-10">
           <div>
-            <h2 className="text-2xl font-semibold text-white">{t.ctaTitle}</h2>
-            <p className="mt-2 text-brand-50/90">{t.ctaText}</p>
+            <h2 className="text-2xl font-semibold text-stone-950">{t.ctaTitle}</h2>
+            <p className="mt-2 text-stone-800">{t.ctaText}</p>
           </div>
           <ButtonLink href={signup} variant="light" size="lg">{t.ctaButton}</ButtonLink>
         </div>

@@ -135,7 +135,7 @@ export function JobWizard({
           )}
         </div>
         <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-stone-200" aria-hidden="true">
-          <div className="h-full rounded-full bg-brand-600 transition-[width] duration-300" style={{ width: `${(step / STEPS.length) * 100}%` }} />
+          <div className="h-full rounded-full bg-brand-400 transition-[width] duration-300" style={{ width: `${(step / STEPS.length) * 100}%` }} />
         </div>
       </div>
 
@@ -265,7 +265,7 @@ export function JobWizard({
                     values.timing === t ? "border-brand-600 bg-brand-50" : "border-stone-300 hover:border-stone-400",
                   )}
                 >
-                  <input type="radio" name="timing" value={t} checked={values.timing === t} onChange={() => set("timing", t)} className="mt-1 h-4 w-4 accent-brand-700" />
+                  <input type="radio" name="timing" value={t} checked={values.timing === t} onChange={() => set("timing", t)} className="mt-1 h-4 w-4 accent-brand-500" />
                   <span>
                     <span className="block font-medium text-stone-900">{TIMING_LABELS[t]}</span>
                     <span className="block text-sm text-stone-600">{w.timingHints[t]}</span>
@@ -294,7 +294,7 @@ export function JobWizard({
                     values.hasPhotos === o.v ? "border-brand-600 bg-brand-50" : "border-stone-300 hover:border-stone-400",
                   )}
                 >
-                  <input type="radio" name="fotos" checked={values.hasPhotos === o.v} onChange={() => set("hasPhotos", o.v)} className="h-4 w-4 accent-brand-700" />
+                  <input type="radio" name="fotos" checked={values.hasPhotos === o.v} onChange={() => set("hasPhotos", o.v)} className="h-4 w-4 accent-brand-500" />
                   {o.label}
                 </label>
               ))}

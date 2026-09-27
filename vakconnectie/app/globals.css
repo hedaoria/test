@@ -2,22 +2,23 @@
 
 /*
  * Vakconnectie huisstijl
- * Eén merkkleur (polder­groen) plus warme neutrale tinten (Tailwind "stone").
+ * Eén merkkleur (geel, gelijk aan het logo) plus warme neutrale tinten (Tailwind "stone").
  */
 @theme {
   --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
 
-  --color-brand-50: #eff6f2;
-  --color-brand-100: #d7eadf;
-  --color-brand-200: #b0d4c1;
-  --color-brand-300: #80b89c;
-  --color-brand-400: #519877;
-  --color-brand-500: #327c5c;
-  --color-brand-600: #25664b;
-  --color-brand-700: #1f523d;
-  --color-brand-800: #1b4333;
-  --color-brand-900: #17372b;
-  --color-brand-950: #0b1f18;
+  /* Merkgeel: 400 is exact het logogeel. 600+ zijn donkerdere tinten voor leesbare tekst en randen. */
+  --color-brand-50: #fffaeb;
+  --color-brand-100: #fff1c2;
+  --color-brand-200: #ffe48f;
+  --color-brand-300: #ffd75c;
+  --color-brand-400: #ffc72c;
+  --color-brand-500: #f0b400;
+  --color-brand-600: #c99400;
+  --color-brand-700: #8f6900;
+  --color-brand-800: #6e5100;
+  --color-brand-900: #573f00;
+  --color-brand-950: #332500;
 
   --radius-card: 0.875rem;
 }

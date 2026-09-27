@@ -54,7 +54,7 @@ export default async function HomePage(props: PageProps<"/[lang]">) {
                   className="input h-14 text-[1.0625rem] sm:h-12 sm:border-0 sm:shadow-none sm:focus:shadow-none"
                   autoComplete="off"
                 />
-                <button type="submit" className="h-14 shrink-0 rounded-lg bg-brand-700 px-6 text-[1.0625rem] font-semibold text-white transition-colors hover:bg-brand-800 sm:h-12">
+                <button type="submit" className="h-14 shrink-0 rounded-lg bg-brand-400 px-6 text-[1.0625rem] font-semibold text-stone-950 transition-colors hover:bg-brand-500 sm:h-12">
                   {d.common.placeJob}
                 </button>
               </div>
@@ -83,7 +83,7 @@ export default async function HomePage(props: PageProps<"/[lang]">) {
                 href={whatsappUrl(t.whatsappText)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 rounded-lg bg-brand-700 px-4 py-3.5 font-semibold text-white transition-colors hover:bg-brand-800"
+                className="flex items-center gap-3 rounded-lg bg-brand-400 px-4 py-3.5 font-semibold text-stone-950 transition-colors hover:bg-brand-500"
               >
                 <WhatsAppIcon className="h-5 w-5" /> {t.whatsappCta}
               </a>
@@ -146,16 +146,16 @@ export default async function HomePage(props: PageProps<"/[lang]">) {
       {/* Voor vakmensen */}
       <section className="py-16 sm:py-20">
         <div className="container-page">
-          <div className="rounded-2xl bg-brand-800 p-8 text-white sm:p-12">
+          <div className="rounded-2xl bg-brand-400 p-8 text-stone-950 sm:p-12">
             <div className="max-w-2xl">
-              <p className="text-sm font-semibold text-brand-200">{t.prosEyebrow}</p>
-              <h2 className="mt-2 text-2xl font-semibold text-white sm:text-3xl">{t.prosHeading}</h2>
-              <p className="mt-4 leading-relaxed text-brand-50/90">
+              <p className="text-sm font-semibold text-stone-800">{t.prosEyebrow}</p>
+              <h2 className="mt-2 text-2xl font-semibold text-stone-950 sm:text-3xl">{t.prosHeading}</h2>
+              <p className="mt-4 leading-relaxed text-stone-800">
                 {t.prosText}
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <ButtonLink href={lp("/aanmelden-als-vakman")} variant="light" size="lg">{d.common.joinAsPro}</ButtonLink>
-                <ButtonLink href={lp("/voor-vakmensen")} size="lg" className="border border-brand-600 bg-transparent hover:bg-brand-700">
+                <ButtonLink href={lp("/voor-vakmensen")} size="lg" className="border border-stone-950/25 bg-transparent hover:bg-brand-300">
                   {d.common.moreInfo}
                 </ButtonLink>
               </div>

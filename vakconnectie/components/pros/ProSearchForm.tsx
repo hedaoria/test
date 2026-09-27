@@ -48,7 +48,7 @@ export function ProSearchForm({ values = {}, compact, className, locale }: { val
           </select>
         </div>
         <div className={clsx("flex items-end", !compact && "sm:col-span-2")}>
-          <button type="submit" className="h-12 w-full rounded-lg bg-brand-700 px-6 font-semibold text-white transition-colors hover:bg-brand-800">
+          <button type="submit" className="h-12 w-full rounded-lg bg-brand-400 px-6 font-semibold text-stone-950 transition-colors hover:bg-brand-500">
             {t.submit}
           </button>
         </div>

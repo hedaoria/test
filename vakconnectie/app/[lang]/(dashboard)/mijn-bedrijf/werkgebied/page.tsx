@@ -38,7 +38,7 @@ export default async function WorkAreaPage() {
               <div className="grid gap-2 sm:grid-cols-2">
                 {categories.map((c) => (
                   <label key={c.slug} className="flex cursor-pointer items-center gap-3 rounded-lg border border-stone-200 px-3 py-2.5 hover:border-stone-300 has-[:checked]:border-brand-600 has-[:checked]:bg-brand-50">
-                    <input type="checkbox" name="vakgebied" value={c.slug} defaultChecked={pro.categories.includes(c.slug)} className="h-4 w-4 accent-brand-700" />
+                    <input type="checkbox" name="vakgebied" value={c.slug} defaultChecked={pro.categories.includes(c.slug)} className="h-4 w-4 accent-brand-500" />
                     {c.name}
                   </label>
                 ))}

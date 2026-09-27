@@ -10,7 +10,7 @@ export function NotificationList({ items }: { items: Notification[] }) {
       {items.map((n) => (
         <li key={n.id}>
           <Link href={n.href} className="flex items-start gap-3 px-5 py-4 transition-colors hover:bg-stone-50">
-            <span aria-hidden="true" className={clsx("mt-2 h-2 w-2 shrink-0 rounded-full", n.read ? "bg-transparent" : "bg-brand-600")} />
+            <span aria-hidden="true" className={clsx("mt-2 h-2 w-2 shrink-0 rounded-full", n.read ? "bg-transparent" : "bg-brand-400")} />
             <span className="min-w-0 flex-1">
               <span className={clsx("block", n.read ? "text-stone-700" : "font-medium text-stone-950")}>{n.text}</span>
               <span className="text-sm text-stone-500">{relativeDate(n.createdAt)}</span>

@@ -165,7 +165,7 @@ export function RegisterForm({ role }: { role: "klant" | "vakman" }) {
       <Input id="wachtwoord" label="Wachtwoord" type="password" autoComplete="new-password" error={errors.wachtwoord} hint="Minimaal 8 tekens." />
       <div>
         <label className="flex cursor-pointer items-start gap-3 text-[0.9375rem] text-stone-700">
-          <input type="checkbox" name="voorwaarden" value="ja" className="mt-1 h-4 w-4 accent-brand-700" />
+          <input type="checkbox" name="voorwaarden" value="ja" className="mt-1 h-4 w-4 accent-brand-500" />
           <span>
             Ik ga akkoord met de <Link href="/algemene-voorwaarden" className="underline">algemene voorwaarden</Link> en het{" "}
             <Link href="/privacybeleid" className="underline">privacybeleid</Link>.

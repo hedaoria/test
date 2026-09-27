@@ -5,7 +5,7 @@ export function HowItWorksSteps({ steps, className }: { steps: readonly { title:
     <ol className={clsx("grid gap-8 md:grid-cols-3 md:gap-6", className)}>
       {steps.map((s, i) => (
         <li key={s.title} className="relative flex gap-4 md:block">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-brand-700 text-base font-semibold text-brand-700">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-brand-400 bg-brand-400 text-base font-semibold text-stone-950">
             {i + 1}
           </span>
           {i < steps.length - 1 && (
