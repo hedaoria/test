@@ -30,8 +30,8 @@ export function Stars({ value, size = "md" }: { value: number; size?: "sm" | "md
   );
 }
 
-export function RatingInline({ average, count, className }: { average: number; count: number; className?: string }) {
-  if (count === 0) return <span className={clsx("text-sm text-stone-500", className)}>Nog geen beoordelingen</span>;
+export function RatingInline({ average, count, className, emptyLabel = "Nog geen beoordelingen" }: { average: number; count: number; className?: string; emptyLabel?: string }) {
+  if (count === 0) return <span className={clsx("text-sm text-stone-500", className)}>{emptyLabel}</span>;
   return (
     <span className={clsx("inline-flex items-center gap-1.5 text-sm", className)}>
       <Stars value={average} size="sm" />

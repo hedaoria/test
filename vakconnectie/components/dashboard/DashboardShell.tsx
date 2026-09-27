@@ -41,7 +41,7 @@ export function DashboardShell({
       <header className="sticky top-0 z-30 border-b border-stone-200 bg-white">
         <div className="mx-auto flex h-16 max-w-[90rem] items-center justify-between gap-4 px-4 sm:px-6">
           <div className="flex items-center gap-4">
-            <Logo />
+            <Logo label="Vakconnectie, naar de homepage" />
             <span className="hidden rounded-full bg-stone-100 px-2.5 py-0.5 text-xs font-medium text-stone-700 sm:inline">{title}</span>
           </div>
           <div className="flex items-center gap-2">

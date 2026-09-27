@@ -1,5 +1,8 @@
 import { isValidPostcode } from "@/lib/geo";
 import type { Timing } from "@/lib/types";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
+
+type Messages = Dictionary["validation"];
 
 /** Gedeelde validatie voor de aanvraag- en aanmeldformulieren. */
 
@@ -24,23 +27,23 @@ export interface JobInput {
 
 export type JobErrors = Partial<Record<keyof JobInput, string>>;
 
-export function validateJobStep(step: number, v: JobInput): JobErrors {
+export function validateJobStep(step: number, v: JobInput, m: Messages): JobErrors {
   const e: JobErrors = {};
-  if (step === 1 && !v.category) e.category = "Kies wat voor klus het is.";
+  if (step === 1 && !v.category) e.category = m.category;
   if (step === 2) {
-    if (v.title.trim().length < 5) e.title = "Geef je project een korte titel, bijvoorbeeld “Badkamer renoveren”.";
-    if (v.description.trim().length < 20) e.description = "Vertel iets meer, minimaal een paar zinnen.";
+    if (v.title.trim().length < 5) e.title = m.title;
+    if (v.description.trim().length < 20) e.description = m.description;
   }
   if (step === 3) {
-    if (!isValidPostcode(v.postcode)) e.postcode = "Vul een geldige postcode in, bijvoorbeeld 2011 AB.";
-    if (!/^[0-9]{1,5}\s?[A-Za-z0-9-]{0,6}$/.test(v.houseNumber.trim())) e.houseNumber = "Vul je huisnummer in.";
+    if (!isValidPostcode(v.postcode)) e.postcode = m.postcode;
+    if (!/^[0-9]{1,5}\s?[A-Za-z0-9-]{0,6}$/.test(v.houseNumber.trim())) e.houseNumber = m.houseNumber;
   }
-  if (step === 4 && !v.timing) e.timing = "Kies wanneer de klus moet gebeuren.";
+  if (step === 4 && !v.timing) e.timing = m.timing;
   if (step === 6) {
-    if (v.name.trim().length < 2) e.name = "Vul je naam in.";
-    if (v.phone.trim() && !PHONE_PATTERN.test(v.phone.trim())) e.phone = "Dit telefoonnummer klopt niet helemaal.";
-    if (v.email.trim() && !EMAIL_PATTERN.test(v.email.trim())) e.email = "Vul een geldig e-mailadres in.";
-    if (!v.phone.trim() && !v.email.trim()) e.phone = "Vul een telefoonnummer of e-mailadres in, zodat we contact met je kunnen opnemen.";
+    if (v.name.trim().length < 2) e.name = m.name;
+    if (v.phone.trim() && !PHONE_PATTERN.test(v.phone.trim())) e.phone = m.phone;
+    if (v.email.trim() && !EMAIL_PATTERN.test(v.email.trim())) e.email = m.email;
+    if (!v.phone.trim() && !v.email.trim()) e.phone = m.contactRequired;
   }
   return e;
 }
@@ -58,14 +61,14 @@ export interface ProSignupInput {
 
 export type ProSignupErrors = Partial<Record<keyof ProSignupInput, string>>;
 
-export function validateProSignup(v: ProSignupInput): ProSignupErrors {
+export function validateProSignup(v: ProSignupInput, m: Messages): ProSignupErrors {
   const e: ProSignupErrors = {};
-  if (v.name.trim().length < 2) e.name = "Vul je naam in.";
-  if (v.company.trim().length < 2) e.company = "Vul je bedrijfsnaam in.";
-  if (!KVK_PATTERN.test(v.kvk.trim())) e.kvk = "Een KvK-nummer bestaat uit 8 cijfers.";
-  if (v.categories.length === 0) e.categories = "Kies minimaal één vakgebied.";
-  if (v.region.trim().length < 2) e.region = "Vul je vestigingsplaats of regio in.";
-  if (!PHONE_PATTERN.test(v.phone.trim())) e.phone = "Vul een geldig telefoonnummer in.";
-  if (v.email.trim() && !EMAIL_PATTERN.test(v.email.trim())) e.email = "Vul een geldig e-mailadres in.";
+  if (v.name.trim().length < 2) e.name = m.name;
+  if (v.company.trim().length < 2) e.company = m.company;
+  if (!KVK_PATTERN.test(v.kvk.trim())) e.kvk = m.kvk;
+  if (v.categories.length === 0) e.categories = m.categories;
+  if (v.region.trim().length < 2) e.region = m.region;
+  if (!PHONE_PATTERN.test(v.phone.trim())) e.phone = m.phoneRequired;
+  if (v.email.trim() && !EMAIL_PATTERN.test(v.email.trim())) e.email = m.email;
   return e;
 }

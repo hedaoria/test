@@ -18,3 +18,22 @@ export const cities: City[] = [
 export function getCity(slug: string) {
   return cities.find((c) => c.slug === slug);
 }
+
+const EN: Record<string, { name: string; intro: string }> = {
+  amsterdam: { name: "Amsterdam", intro: "From a canal house in the city centre to a new-build home in IJburg: in Amsterdam every house calls for slightly different know-how." },
+  rotterdam: { name: "Rotterdam", intro: "From a pre-war house in Kralingen to an apartment on the Kop van Zuid: Rotterdam’s housing is very varied." },
+  "den-haag": { name: "The Hague", intro: "From the townhouses in the Statenkwartier to new builds in Ypenburg: The Hague has homes from very different periods." },
+  utrecht: { name: "Utrecht", intro: "Wharf cellars, 1930s houses and new builds in Leidsche Rijn: you see it all in Utrecht." },
+  eindhoven: { name: "Eindhoven", intro: "From older homes in Strijp to new builds on the edge of the city: Eindhoven has many different types of homes." },
+  almere: { name: "Almere", intro: "Many homes in Almere were built from the 1980s onwards, each with its own construction method." },
+  haarlem: { name: "Haarlem", intro: "From a ground-floor flat in the Kleverpark area to a family home in Schalkwijk: Haarlem has homes from every era." },
+  leiden: { name: "Leiden", intro: "In Leiden’s historic city centre extra rules often apply, especially for listed buildings." },
+  groningen: { name: "Groningen", intro: "From 1930s houses in the city to farmhouses in the surrounding villages: the Groningen region is varied." },
+  tilburg: { name: "Tilburg", intro: "From workers’ cottages in the city centre to new builds in De Reeshof: Tilburg has many different homes." },
+  breda: { name: "Breda", intro: "From the city centre to the surrounding villages: in and around Breda there are homes from very different periods." },
+  nijmegen: { name: "Nijmegen", intro: "From the Benedenstad to the Waalsprong: Nijmegen combines centuries-old streets with new neighbourhoods." },
+};
+
+export function cityText(c: City, locale: "nl" | "en") {
+  return locale === "en" ? (EN[c.slug] ?? c) : { name: c.name, intro: c.intro };
+}

@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { termsSections } from "@/lib/data/legal";
 import { listCategories, listCities, listProfessionals } from "@/lib/repository";
 import { absoluteUrl } from "@/lib/site";
+import { alternates } from "@/lib/i18n/routes";
 
 const STATIC = [
   "/",
@@ -17,13 +18,25 @@ const STATIC = [
   "/cookiebeleid",
 ];
 
+/** Elke pagina in beide talen, met onderlinge hreflang-verwijzingen. */
+function entries(internal: string, priority: number): MetadataRoute.Sitemap {
+  const urls = alternates(internal);
+  const languages = { nl: absoluteUrl(urls.nl), en: absoluteUrl(urls.en) };
+  return (["nl", "en"] as const).map((l) => ({
+    url: absoluteUrl(urls[l]),
+    changeFrequency: "weekly" as const,
+    priority,
+    alternates: { languages },
+  }));
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [categories, cities, pros] = await Promise.all([listCategories(), listCities(), listProfessionals()]);
   return [
-    ...STATIC.map((p) => ({ url: absoluteUrl(p), changeFrequency: "weekly" as const, priority: p === "/" ? 1 : 0.6 })),
-    ...categories.map((c) => ({ url: absoluteUrl(`/${c.slug}`), changeFrequency: "weekly" as const, priority: 0.8 })),
-    ...cities.map((c) => ({ url: absoluteUrl(`/vakmensen/${c.slug}`), changeFrequency: "weekly" as const, priority: 0.8 })),
-    ...pros.map((p) => ({ url: absoluteUrl(`/vakman/${p.slug}`), changeFrequency: "weekly" as const, priority: 0.5 })),
-    ...(termsSections.length ? [{ url: absoluteUrl("/algemene-voorwaarden"), priority: 0.3 }] : []),
+    ...STATIC.flatMap((p) => entries(p, p === "/" ? 1 : 0.6)),
+    ...categories.flatMap((c) => entries(`/${c.slug}`, 0.8)),
+    ...cities.flatMap((c) => entries(`/vakmensen/${c.slug}`, 0.8)),
+    ...pros.flatMap((p) => entries(`/vakman/${p.slug}`, 0.5)),
+    ...(termsSections.length ? entries("/algemene-voorwaarden", 0.3) : []),
   ];
 }

@@ -1,27 +1,6 @@
 import clsx from "clsx";
 
-export const CUSTOMER_STEPS = [
-  {
-    title: "Vertel wat je nodig hebt",
-    text: "Beschrijf je project, de locatie en je gewenste planning, en verstuur je aanvraag via WhatsApp of e-mail. Gratis en vrijblijvend.",
-  },
-  {
-    title: "Wij zoeken een passende vakman",
-    text: "Vakconnectie zoekt een zelfstandige vakman die bij je project past. We controleren de KvK-inschrijving voordat we iemand aan je voorstellen.",
-  },
-  {
-    title: "Je maakt zelf de afspraken",
-    text: "Jij en de vakman leggen samen schriftelijk vast wat de prijs, planning, werkzaamheden en garantie zijn.",
-  },
-];
-
-export function HowItWorksSteps({
-  steps = CUSTOMER_STEPS,
-  className,
-}: {
-  steps?: { title: string; text: string }[];
-  className?: string;
-}) {
+export function HowItWorksSteps({ steps, className }: { steps: readonly { title: string; text: string }[]; className?: string }) {
   return (
     <ol className={clsx("grid gap-8 md:grid-cols-3 md:gap-6", className)}>
       {steps.map((s, i) => (

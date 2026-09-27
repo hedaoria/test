@@ -3,6 +3,8 @@
 import { Mail } from "lucide-react";
 import clsx from "clsx";
 import { mailtoUrl, whatsappUrl } from "@/lib/contact";
+import type { Locale } from "@/lib/i18n/config";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -18,12 +20,14 @@ function WhatsAppIcon({ className }: { className?: string }) {
  * bezoeker het bericht daar zelf verstuurt.
  */
 export function SendButtons({
+  locale,
   message,
   subject,
   onBeforeSend,
   onSent,
   className,
 }: {
+  locale: Locale;
   message: string;
   subject: string;
   /** Validatie vlak voor het openen. Geef false terug om te stoppen. */
@@ -31,6 +35,8 @@ export function SendButtons({
   onSent?: (channel: "whatsapp" | "email") => void;
   className?: string;
 }) {
+  const t = getDictionary(locale).send;
+
   function handleClick(e: React.MouseEvent, channel: "whatsapp" | "email") {
     if (onBeforeSend && !onBeforeSend()) {
       e.preventDefault();
@@ -49,7 +55,7 @@ export function SendButtons({
         className="inline-flex h-13 items-center justify-center gap-2.5 rounded-lg bg-brand-700 px-5 font-semibold text-white transition-colors hover:bg-brand-800"
       >
         <WhatsAppIcon className="h-5 w-5" />
-        Verstuur via WhatsApp
+        {t.whatsapp}
       </a>
       <a
         href={mailtoUrl(subject, message)}
@@ -57,7 +63,7 @@ export function SendButtons({
         className="inline-flex h-13 items-center justify-center gap-2.5 rounded-lg border border-stone-300 bg-white px-5 font-semibold text-stone-900 transition-colors hover:border-stone-400 hover:bg-stone-50"
       >
         <Mail className="h-5 w-5" aria-hidden="true" />
-        Verstuur via e-mail
+        {t.email}
       </a>
     </div>
   );

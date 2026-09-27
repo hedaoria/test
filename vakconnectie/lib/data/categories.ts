@@ -142,3 +142,104 @@ export function getCategory(slug: string) {
 export function categoryName(slug: string) {
   return getCategory(slug)?.name ?? slug;
 }
+
+/* ---------- Engelse teksten per vakgebied ---------- */
+
+type CategoryText = Pick<Category, "name" | "namePlural" | "short" | "intro" | "commonJobs">;
+
+const EN: Record<string, CategoryText> = {
+  schilder: {
+    name: "Painter",
+    namePlural: "Painters",
+    short: "Interior and exterior painting, window frames and wood rot.",
+    intro: "Good painting starts with the preparation: sanding, filling and repairing any wood rot. Describe your job and we will find a suitable self-employed painter.",
+    commonJobs: ["Paint exterior window frames", "Paint the living room", "Repair wood rot", "Paint the stairwell", "Lacquer doors"],
+  },
+  loodgieter: {
+    name: "Plumber",
+    namePlural: "Plumbers",
+    short: "Leaks, pipework, drains and sanitary fittings.",
+    intro: "From a dripping tap to new pipework for a renovation. Tell us what is going on and we will find a suitable self-employed plumber.",
+    commonJobs: ["Fix a leak", "Replace a toilet", "Unblock a drain", "Reroute pipes", "Replace a tap"],
+  },
+  elektricien: {
+    name: "Electrician",
+    namePlural: "Electricians",
+    short: "Fuse boxes, sockets, lighting and charging points.",
+    intro: "For a new fuse box, extra sockets or connecting a charging point. Always have electrical work done by a professional.",
+    commonJobs: ["Replace fuse box", "Add extra sockets", "Install a charging point", "Install lighting", "Fix a fault"],
+  },
+  timmerman: {
+    name: "Carpenter",
+    namePlural: "Carpenters",
+    short: "Window frames, doors, stairs and bespoke woodwork.",
+    intro: "A built-in cupboard, new interior doors or finishing a dormer. Tell us what you have in mind and we will find a suitable self-employed carpenter.",
+    commonJobs: ["Build a fitted cupboard", "Fit interior doors", "Replace a window frame", "Renovate stairs", "Put up a fence"],
+  },
+  stukadoor: {
+    name: "Plasterer",
+    namePlural: "Plasterers",
+    short: "Smooth or textured walls and ceilings.",
+    intro: "Smooth walls, a new ceiling or repairing cracks. Let us know roughly how many square metres it involves; that helps us find the right plasterer.",
+    commonJobs: ["Skim walls smooth", "Spray a ceiling", "Repair cracks", "Apply decorative plaster", "Microcement"],
+  },
+  dakdekker: {
+    name: "Roofer",
+    namePlural: "Roofers",
+    short: "Roof leaks, tiles, bitumen and gutters.",
+    intro: "A leaking roof needs checking quickly. Whether it is a repair or a complete roof renovation, we will find a suitable self-employed roofer.",
+    commonJobs: ["Repair a roof leak", "Renew a flat roof", "Replace a gutter", "Repair roof tiles", "Insulate the roof"],
+  },
+  vloerspecialist: {
+    name: "Flooring specialist",
+    namePlural: "Flooring specialists",
+    short: "Parquet, vinyl, laminate and poured floors.",
+    intro: "A new vinyl floor, sanding parquet or a poured floor in the living room. Tell us what you want and we will find a suitable flooring specialist.",
+    commonJobs: ["Lay a vinyl floor", "Sand and lacquer parquet", "Lay laminate", "Install a poured floor", "Level the subfloor"],
+  },
+  badkamerspecialist: {
+    name: "Bathroom specialist",
+    namePlural: "Bathroom specialists",
+    short: "Complete bathroom renovations from demolition to handover.",
+    intro: "Renovating a bathroom involves several trades. A bathroom specialist takes care of the whole job, from demolition to sealing.",
+    commonJobs: ["Renovate bathroom", "Fit a walk-in shower", "Renovate the toilet", "Tile the bathroom", "Bathroom underfloor heating"],
+  },
+  hovenier: {
+    name: "Gardener",
+    namePlural: "Gardeners",
+    short: "Garden design, paving, maintenance and planting.",
+    intro: "Having a new garden laid out, replacing the paving or regular maintenance. Tell us what you want and we will find a suitable self-employed gardener.",
+    commonJobs: ["Lay out a garden", "Lay paving", "Garden maintenance", "Put up a fence", "Prune trees"],
+  },
+  aannemer: {
+    name: "Building contractor",
+    namePlural: "Building contractors",
+    short: "Renovations, extensions and larger projects.",
+    intro: "For an extension, an extra storey or a complete renovation you need someone to keep the overview. A building contractor coordinates the work and the different trades.",
+    commonJobs: ["Build an extension", "Renovate a home", "Fit a dormer", "Knock through a wall", "Convert a garage"],
+  },
+  tegelzetter: {
+    name: "Tiler",
+    namePlural: "Tilers",
+    short: "Wall and floor tiles, indoors and outdoors.",
+    intro: "Large floor tiles, a tiled kitchen wall or a bathroom that needs retiling. Mention the tile size if you already know it.",
+    commonJobs: ["Lay floor tiles", "Tile the bathroom", "Tile the kitchen wall", "Renew grouting", "Tile a patio"],
+  },
+  schoonmaakbedrijf: {
+    name: "Cleaning company",
+    namePlural: "Cleaning companies",
+    short: "End-of-tenancy cleaning, windows and post-renovation cleaning.",
+    intro: "After a renovation or a move, a thorough clean is no luxury. Tell us what needs cleaning and we will find a suitable company.",
+    commonJobs: ["End-of-tenancy clean", "Post-renovation clean", "Window cleaning", "Moving clean", "Facade cleaning"],
+  },
+};
+
+/** Teksten van een vakgebied in de gevraagde taal. */
+export function categoryText(c: Category, locale: "nl" | "en"): CategoryText {
+  return locale === "en" ? (EN[c.slug] ?? c) : c;
+}
+
+export function localizedCategoryName(slug: string, locale: "nl" | "en") {
+  const c = getCategory(slug);
+  return c ? categoryText(c, locale).name : slug;
+}

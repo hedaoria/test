@@ -21,6 +21,17 @@ npm run lint
 
 Bedrijfs- en contactgegevens staan op één plek: `lib/site.ts`.
 
+## Talen (Nederlands en Engels)
+
+De hele website is tweetalig. Nederlands staat op de root (`/klus-plaatsen`), Engels onder `/en` met Engelse URL's (`/en/project-request`). In het menu staat een taalkeuze **NL | EN** die naar dezelfde pagina in de andere taal gaat.
+
+- `lib/i18n/dictionaries.ts`: alle vaste teksten per taal.
+- `lib/i18n/routes.ts`: vertaling van URL's tussen Nederlands en Engels (`localizePath`).
+- `proxy.ts`: stuurt bezoekers naar de interne route `app/[lang]/...` en zet de taal door.
+- Vakgebieden, steden, veelgestelde vragen en het privacybeleid hebben een Engelse versie in `lib/data/`.
+- Elke pagina heeft `hreflang`-verwijzingen naar de andere taal; de sitemap bevat beide talen.
+- Accounts en dashboards (nog uitgeschakeld) zijn voorlopig alleen Nederlands.
+
 ## Pagina's
 
 | URL | Inhoud |

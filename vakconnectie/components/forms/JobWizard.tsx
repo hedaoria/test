@@ -6,39 +6,30 @@ import clsx from "clsx";
 import { Check } from "lucide-react";
 import { Button, ButtonLink } from "@/components/ui/Button";
 import { SendButtons } from "@/components/forms/SendButtons";
-import { categories, getCategory } from "@/lib/data/categories";
-import { TIMING_LABELS } from "@/lib/data/jobs";
+import { categories, categoryText, getCategory } from "@/lib/data/categories";
+import type { Locale } from "@/lib/i18n/config";
+import { getDictionary } from "@/lib/i18n/dictionaries";
+import { localizePath } from "@/lib/i18n/routes";
 import { isValidPostcode, normalizePostcode, placeFromPostcode } from "@/lib/geo";
 import { composeMessage } from "@/lib/contact";
 import { COMPANY } from "@/lib/site";
 import { TIMINGS, validateJobStep, type JobErrors, type JobInput } from "@/lib/validation";
 
-const STEPS = [
-  "Wat voor klus wil je laten uitvoeren?",
-  "Vertel meer over de opdracht",
-  "Waar moet de klus worden uitgevoerd?",
-  "Wanneer wil je dat de klus wordt uitgevoerd?",
-  "Foto’s",
-  "Je contactgegevens",
-  "Controleer en verstuur je aanvraag",
-];
-
-const TIMING_HINTS: Record<string, string> = {
-  "zo-snel-mogelijk": "Bij spoed of een probleem dat niet kan wachten.",
-  "binnen-weken": "Je wilt binnenkort beginnen.",
-  "binnen-maanden": "Je oriënteert je en plant vooruit.",
-  "in-overleg": "De planning bespreek je met de vakman.",
-};
-
 export function JobWizard({
+  locale,
   initialCategory,
   initialTitle,
   preferredProfessional,
 }: {
+  locale: Locale;
   initialCategory?: string;
   initialTitle?: string;
   preferredProfessional?: string;
 }) {
+  const d = getDictionary(locale);
+  const w = d.wizard;
+  const TIMING_LABELS = d.timing;
+  const STEPS = w.steps;
   const [step, setStep] = useState(1);
   const [values, setValues] = useState<JobInput>({
     category: initialCategory && getCategory(initialCategory) ? initialCategory : "",
@@ -72,7 +63,7 @@ export function JobWizard({
   }
 
   function next() {
-    const e = validateJobStep(step, values);
+    const e = validateJobStep(step, values, d.validation);
     setErrors(e);
     if (Object.keys(e).length === 0) setStep((s) => Math.min(s + 1, STEPS.length));
   }
@@ -82,21 +73,23 @@ export function JobWizard({
     setStep((s) => Math.max(1, s - 1));
   }
 
-  const category = getCategory(values.category);
+  const categoryData = getCategory(values.category);
+  const category = categoryData ? categoryText(categoryData, locale) : undefined;
   const place = isValidPostcode(values.postcode) ? placeFromPostcode(values.postcode) : undefined;
   const isSummary = step === STEPS.length;
 
-  const message = composeMessage("Hallo Vakconnectie, hierbij mijn projectaanvraag.", [
-    ["Vakgebied", category?.name],
-    ["Project", values.title],
-    ["Omschrijving", values.description],
-    ["Adres", `${normalizePostcode(values.postcode)} ${values.houseNumber}${place ? `, ${place}` : ""}`],
-    ["Planning", values.timing ? TIMING_LABELS[values.timing] : undefined],
-    ["Foto's", values.hasPhotos ? "Ik stuur foto's mee in dit gesprek." : undefined],
-    ["Voorkeur voor vakman", preferredProfessional],
-    ["Naam", values.name],
-    ["Telefoon", values.phone],
-    ["E-mail", values.email],
+  const m = w.message;
+  const message = composeMessage(m.intro, [
+    [m.category, category?.name],
+    [m.project, values.title],
+    [m.description, values.description],
+    [m.address, `${normalizePostcode(values.postcode)} ${values.houseNumber}${place ? `, ${place}` : ""}`],
+    [m.timing, values.timing ? TIMING_LABELS[values.timing] : undefined],
+    [m.photos, values.hasPhotos ? m.photosValue : undefined],
+    [m.preferred, preferredProfessional],
+    [m.name, values.name],
+    [m.phone, values.phone],
+    [m.email, values.email],
   ]);
 
   if (sentVia) {
@@ -106,21 +99,19 @@ export function JobWizard({
           <Check className="h-6 w-6" aria-hidden="true" />
         </span>
         <h2 ref={headingRef} tabIndex={-1} className="mt-5 text-2xl font-semibold outline-none">
-          Nog één stap: verstuur het bericht
+          {w.sentTitle}
         </h2>
         <p className="mx-auto mt-3 max-w-md leading-relaxed text-stone-600">
-          {sentVia === "whatsapp"
-            ? "WhatsApp is geopend met je aanvraag. Verstuur het bericht daar om je aanvraag bij ons af te ronden."
-            : "Je e-mailprogramma is geopend met je aanvraag. Verstuur de e-mail om je aanvraag bij ons af te ronden."}
-          {values.hasPhotos && " Voeg je foto’s toe aan hetzelfde bericht of stuur ze direct erachteraan."}
+          {sentVia === "whatsapp" ? w.sentWhatsapp : w.sentEmail}
+          {values.hasPhotos && w.sentPhotos}
         </p>
         <p className="mx-auto mt-3 max-w-md text-sm text-stone-500">
-          Opende er niets? Stuur je aanvraag dan naar{" "}
+          {w.sentFallback}{" "}
           <a href={`mailto:${COMPANY.email}`} className="font-medium text-brand-700 hover:underline">{COMPANY.email}</a>.
         </p>
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-          <Button variant="secondary" size="lg" onClick={() => setSentVia(undefined)}>Terug naar mijn aanvraag</Button>
-          <ButtonLink href="/" variant="ghost" size="lg">Naar de homepage</ButtonLink>
+          <Button variant="secondary" size="lg" onClick={() => setSentVia(undefined)}>{w.backToRequest}</Button>
+          <ButtonLink href={localizePath(locale, "/")} variant="ghost" size="lg">{d.common.backHome}</ButtonLink>
         </div>
       </div>
     );
@@ -130,16 +121,16 @@ export function JobWizard({
     <div className="mx-auto max-w-2xl">
       {preferredProfessional && (
         <p className="mb-5 rounded-lg bg-brand-50 px-4 py-3 text-sm text-brand-900">
-          Je aanvraag vermeldt dat je voorkeur hebt voor <strong>{preferredProfessional}</strong>.
+          {w.preferred(preferredProfessional)}
         </p>
       )}
 
       <div className="mb-6">
         <div className="flex items-center justify-between text-sm">
-          <span className="font-medium text-stone-700">{isSummary ? "Overzicht" : `Stap ${step} van ${STEPS.length - 1}`}</span>
+          <span className="font-medium text-stone-700">{isSummary ? w.overview : w.stepOf(step, STEPS.length - 1)}</span>
           {step > 1 && (
             <button type="button" onClick={back} className="font-medium text-brand-700 hover:underline">
-              ← Vorige
+              {w.previous}
             </button>
           )}
         </div>
@@ -162,7 +153,7 @@ export function JobWizard({
 
         {step === 1 && (
           <fieldset className="mt-6">
-            <legend className="sr-only">Kies een vakgebied</legend>
+            <legend className="sr-only">{w.chooseCategory}</legend>
             <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
               {categories.map((c) => (
                 <label
@@ -173,7 +164,7 @@ export function JobWizard({
                   )}
                 >
                   <input type="radio" name="category" value={c.slug} checked={values.category === c.slug} onChange={() => set("category", c.slug)} className="sr-only" />
-                  {c.name}
+                  {categoryText(c, locale).name}
                 </label>
               ))}
             </div>
@@ -184,12 +175,12 @@ export function JobWizard({
         {step === 2 && (
           <div className="mt-6 space-y-5">
             <div>
-              <label htmlFor="titel" className="label">Titel van je project</label>
+              <label htmlFor="titel" className="label">{w.titleLabel}</label>
               <input
                 id="titel"
                 value={values.title}
                 onChange={(e) => set("title", e.target.value)}
-                placeholder={category ? `Bijv. ${category.commonJobs[0]}` : "Bijv. badkamer renoveren"}
+                placeholder={category ? w.titlePlaceholder(category.commonJobs[0]!.toLowerCase()) : w.titlePlaceholderDefault}
                 className="input"
                 aria-invalid={Boolean(errors.title)}
                 maxLength={80}
@@ -206,13 +197,13 @@ export function JobWizard({
               )}
             </div>
             <div>
-              <label htmlFor="omschrijving" className="label">Omschrijving</label>
+              <label htmlFor="omschrijving" className="label">{w.descriptionLabel}</label>
               <textarea
                 id="omschrijving"
                 rows={6}
                 value={values.description}
                 onChange={(e) => set("description", e.target.value)}
-                placeholder="Wat is de huidige situatie en wat wil je laten doen? Noem ook de afmetingen als je die weet."
+                placeholder={w.descriptionPlaceholder}
                 className="input min-h-36 resize-y"
                 aria-invalid={Boolean(errors.description)}
                 aria-describedby="omschrijving-hulp"
@@ -220,7 +211,7 @@ export function JobWizard({
               />
               <FieldError message={errors.description} />
               <p id="omschrijving-hulp" className="mt-1.5 text-sm text-stone-500">
-                Hoe duidelijker je omschrijving, hoe beter we een passende vakman kunnen zoeken.
+                {w.descriptionHint}
               </p>
             </div>
           </div>
@@ -230,7 +221,7 @@ export function JobWizard({
           <div className="mt-6">
             <div className="grid grid-cols-[1.4fr_1fr] gap-3">
               <div>
-                <label htmlFor="postcode" className="label">Postcode</label>
+                <label htmlFor="postcode" className="label">{w.postcode}</label>
                 <input
                   id="postcode"
                   value={values.postcode}
@@ -244,7 +235,7 @@ export function JobWizard({
                 />
               </div>
               <div>
-                <label htmlFor="huisnummer" className="label">Huisnummer</label>
+                <label htmlFor="huisnummer" className="label">{w.houseNumber}</label>
                 <input
                   id="huisnummer"
                   value={values.houseNumber}
@@ -258,13 +249,13 @@ export function JobWizard({
               </div>
             </div>
             <FieldError message={errors.postcode ?? errors.houseNumber} />
-            {place && <p className="mt-3 text-sm text-stone-700">Regio: <strong>{place}</strong></p>}
+            {place && <p className="mt-3 text-sm text-stone-700">{w.region}: <strong>{place}</strong></p>}
           </div>
         )}
 
         {step === 4 && (
           <fieldset className="mt-6">
-            <legend className="sr-only">Planning</legend>
+            <legend className="sr-only">{w.timingLegend}</legend>
             <div className="grid gap-2.5">
               {TIMINGS.map((t) => (
                 <label
@@ -277,7 +268,7 @@ export function JobWizard({
                   <input type="radio" name="timing" value={t} checked={values.timing === t} onChange={() => set("timing", t)} className="mt-1 h-4 w-4 accent-brand-700" />
                   <span>
                     <span className="block font-medium text-stone-900">{TIMING_LABELS[t]}</span>
-                    <span className="block text-sm text-stone-600">{TIMING_HINTS[t]}</span>
+                    <span className="block text-sm text-stone-600">{w.timingHints[t]}</span>
                   </span>
                 </label>
               ))}
@@ -289,13 +280,12 @@ export function JobWizard({
         {step === 5 && (
           <fieldset className="mt-6">
             <legend className="text-stone-600">
-              Foto’s helpen om je project goed in te schatten. Je kunt ze toevoegen aan je WhatsApp-bericht of e-mail,
-              direct nadat je je aanvraag verstuurt.
+              {w.photosText}
             </legend>
             <div className="mt-5 grid gap-2.5 sm:grid-cols-2">
               {[
-                { v: true, label: "Ja, ik stuur foto’s mee" },
-                { v: false, label: "Nee, geen foto’s" },
+                { v: true, label: w.photosYes },
+                { v: false, label: w.photosNo },
               ].map((o) => (
                 <label
                   key={String(o.v)}
@@ -314,44 +304,43 @@ export function JobWizard({
 
         {step === 6 && (
           <div className="mt-6 space-y-5">
-            <Field id="naam" label="Naam" error={errors.name}>
+            <Field id="naam" label={w.name} error={errors.name}>
               <input id="naam" value={values.name} onChange={(e) => set("name", e.target.value)} autoComplete="name" className="input" aria-invalid={Boolean(errors.name)} />
             </Field>
-            <Field id="telefoon" label="Telefoonnummer" error={errors.phone}>
+            <Field id="telefoon" label={w.phone} error={errors.phone}>
               <input id="telefoon" type="tel" value={values.phone} onChange={(e) => set("phone", e.target.value)} autoComplete="tel" className="input" aria-invalid={Boolean(errors.phone)} />
             </Field>
-            <Field id="email" label="E-mailadres" error={errors.email}>
+            <Field id="email" label={w.email} error={errors.email}>
               <input id="email" type="email" value={values.email} onChange={(e) => set("email", e.target.value)} autoComplete="email" className="input" aria-invalid={Boolean(errors.email)} />
             </Field>
-            <p className="text-sm text-stone-500">Vul minimaal een telefoonnummer of e-mailadres in, zodat we contact met je kunnen opnemen.</p>
+            <p className="text-sm text-stone-500">{w.contactHint}</p>
           </div>
         )}
 
         {isSummary && (
           <>
             <dl className="mt-6 divide-y divide-stone-200 rounded-xl border border-stone-200">
-              <SummaryRow label="Vakgebied" onEdit={() => setStep(1)}>{category?.name}</SummaryRow>
-              <SummaryRow label="Project" onEdit={() => setStep(2)}>
+              <SummaryRow label={w.summary.category} edit={w.summary.edit} onEdit={() => setStep(1)}>{category?.name}</SummaryRow>
+              <SummaryRow label={w.summary.project} edit={w.summary.edit} onEdit={() => setStep(2)}>
                 <span className="font-medium">{values.title}</span>
                 <span className="mt-1 block whitespace-pre-line text-stone-600">{values.description}</span>
               </SummaryRow>
-              <SummaryRow label="Locatie" onEdit={() => setStep(3)}>
+              <SummaryRow label={w.summary.location} edit={w.summary.edit} onEdit={() => setStep(3)}>
                 {normalizePostcode(values.postcode)} {values.houseNumber}
                 {place ? `, ${place}` : ""}
               </SummaryRow>
-              <SummaryRow label="Planning" onEdit={() => setStep(4)}>{values.timing && TIMING_LABELS[values.timing]}</SummaryRow>
-              <SummaryRow label="Foto's" onEdit={() => setStep(5)}>{values.hasPhotos ? "Stuur ik mee" : "Geen foto's"}</SummaryRow>
-              <SummaryRow label="Contact" onEdit={() => setStep(6)}>
+              <SummaryRow label={w.summary.timing} edit={w.summary.edit} onEdit={() => setStep(4)}>{values.timing && TIMING_LABELS[values.timing]}</SummaryRow>
+              <SummaryRow label={w.summary.photos} edit={w.summary.edit} onEdit={() => setStep(5)}>{values.hasPhotos ? w.summary.photosYes : w.summary.photosNo}</SummaryRow>
+              <SummaryRow label={w.summary.contact} edit={w.summary.edit} onEdit={() => setStep(6)}>
                 {[values.name, values.phone, values.email].filter(Boolean).join(", ")}
               </SummaryRow>
             </dl>
             <div className="mt-6 rounded-lg bg-stone-50 p-4 text-sm leading-relaxed text-stone-600">
-              Je projectaanvraag is gratis en vrijblijvend. Als je op een van de knoppen klikt, opent je eigen WhatsApp of
-              e-mailprogramma met dit overzicht als bericht. Pas als je dat bericht verstuurt, ontvangen wij je aanvraag.
+              {w.sendNote}
             </div>
-            <SendButtons className="mt-6" message={message} subject={`Projectaanvraag: ${values.title}`} onSent={setSentVia} />
+            <SendButtons locale={locale} className="mt-6" message={message} subject={`${m.subject}: ${values.title}`} onSent={setSentVia} />
             <p className="mt-4 text-center text-sm text-stone-500 sm:text-left">
-              Lees in ons <Link href="/privacybeleid" className="underline">privacybeleid</Link> hoe we met je gegevens omgaan.
+              {w.privacyBefore} <Link href={localizePath(locale, "/privacybeleid")} className="underline">{w.privacyLink}</Link> {w.privacyAfter}
             </p>
           </>
         )}
@@ -359,7 +348,7 @@ export function JobWizard({
         {!isSummary && (
           <div className="mt-8 flex justify-end">
             <Button type="submit" size="lg" className="w-full sm:w-auto">
-              {step === 6 ? "Naar overzicht" : "Volgende"}
+              {step === 6 ? w.toOverview : w.next}
             </Button>
           </div>
         )}
@@ -383,13 +372,13 @@ function Field({ id, label, error, children }: { id: string; label: string; erro
   );
 }
 
-function SummaryRow({ label, onEdit, children }: { label: string; onEdit: () => void; children: React.ReactNode }) {
+function SummaryRow({ label, edit, onEdit, children }: { label: string; edit: string; onEdit: () => void; children: React.ReactNode }) {
   return (
     <div className="grid grid-cols-[1fr_auto] gap-x-4 gap-y-1 p-4 sm:grid-cols-[8rem_1fr_auto]">
       <dt className="text-sm font-medium text-stone-500">{label}</dt>
       <dd className="col-span-2 row-start-2 text-[0.9375rem] text-stone-900 sm:col-span-1 sm:col-start-2 sm:row-start-1">{children}</dd>
       <dd className="col-start-2 row-start-1 sm:col-start-3">
-        <button type="button" onClick={onEdit} className="text-sm font-medium text-brand-700 hover:underline">Wijzig</button>
+        <button type="button" onClick={onEdit} className="text-sm font-medium text-brand-700 hover:underline">{edit}</button>
       </dd>
     </div>
   );

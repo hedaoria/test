@@ -1,9 +1,10 @@
 const dateFmt = new Intl.DateTimeFormat("nl-NL", { day: "numeric", month: "long", year: "numeric" });
+const dateFmtEn = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric" });
 const shortDateFmt = new Intl.DateTimeFormat("nl-NL", { day: "numeric", month: "short" });
 const timeFmt = new Intl.DateTimeFormat("nl-NL", { hour: "2-digit", minute: "2-digit" });
 
-export function formatDate(iso: string) {
-  return dateFmt.format(new Date(iso));
+export function formatDate(iso: string, locale: "nl" | "en" = "nl") {
+  return (locale === "en" ? dateFmtEn : dateFmt).format(new Date(iso));
 }
 
 export function formatShortDate(iso: string) {
@@ -14,8 +15,8 @@ export function formatTime(iso: string) {
   return timeFmt.format(new Date(iso));
 }
 
-export function formatRating(value: number) {
-  return value.toLocaleString("nl-NL", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+export function formatRating(value: number, locale: "nl" | "en" = "nl") {
+  return value.toLocaleString(locale === "en" ? "en-GB" : "nl-NL", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 }
 
 export function formatEuro(value: number) {
