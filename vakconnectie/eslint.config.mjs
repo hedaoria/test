@@ -12,8 +12,6 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
-    // Vakconnectie is a separate Next.js project with its own config.
-    "vakconnectie/**",
   ]),
 ]);
 

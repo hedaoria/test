@@ -1,0 +1,163 @@
+@import "tailwindcss";
+
+/*
+ * Vakconnectie huisstijl
+ * Eén merkkleur (polder­groen) plus warme neutrale tinten (Tailwind "stone").
+ */
+@theme {
+  --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+
+  --color-brand-50: #eff6f2;
+  --color-brand-100: #d7eadf;
+  --color-brand-200: #b0d4c1;
+  --color-brand-300: #80b89c;
+  --color-brand-400: #519877;
+  --color-brand-500: #327c5c;
+  --color-brand-600: #25664b;
+  --color-brand-700: #1f523d;
+  --color-brand-800: #1b4333;
+  --color-brand-900: #17372b;
+  --color-brand-950: #0b1f18;
+
+  --radius-card: 0.875rem;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: #ffffff;
+    color: var(--color-stone-900);
+    font-feature-settings: "ss01";
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: var(--color-stone-950);
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand-600);
+    outline-offset: 2px;
+  }
+
+  summary {
+    list-style: none;
+    cursor: pointer;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+}
+
+@layer components {
+  .container-page {
+    width: 100%;
+    max-width: 76rem;
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .container-page {
+      padding-inline: 1.5rem;
+    }
+  }
+
+  .input {
+    width: 100%;
+    min-height: 3rem;
+    border-radius: 0.625rem;
+    border: 1px solid var(--color-stone-300);
+    background: #fff;
+    padding: 0.625rem 0.875rem;
+    font-size: 1rem;
+    color: var(--color-stone-900);
+    transition:
+      border-color 150ms,
+      box-shadow 150ms;
+  }
+
+  .input::placeholder {
+    color: var(--color-stone-400);
+  }
+
+  .input:focus {
+    outline: none;
+    border-color: var(--color-brand-600);
+    box-shadow: 0 0 0 3px var(--color-brand-100);
+  }
+
+  .input[aria-invalid="true"] {
+    border-color: #b42318;
+  }
+
+  .label {
+    display: block;
+    margin-bottom: 0.375rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-stone-800);
+  }
+
+  .card {
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-stone-200);
+    background: #fff;
+  }
+
+  .card-hover {
+    transition:
+      border-color 180ms ease,
+      box-shadow 180ms ease,
+      transform 180ms ease;
+  }
+
+  .card-hover:hover {
+    border-color: var(--color-stone-300);
+    box-shadow: 0 6px 20px -12px rgb(28 25 23 / 0.25);
+    transform: translateY(-1px);
+  }
+
+  .prose-vc h2 {
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  .prose-vc p,
+  .prose-vc ul {
+    margin-bottom: 1rem;
+    color: var(--color-stone-700);
+    line-height: 1.7;
+  }
+
+  .prose-vc ul {
+    list-style: disc;
+    padding-left: 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0ms !important;
+    animation-duration: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+}
